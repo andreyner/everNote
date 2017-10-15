@@ -1,0 +1,108 @@
+﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+
+namespace Evernote.DataLayer.Sql.Tests
+{
+    [TestClass]
+    public class SharedRepositoryTests
+    {
+        private const string ConnectionString = @"Data Source=ANDREY-PK\SQLEXPRESS;Initial Catalog=EverNoteDb;Integrated Security=True;Connect Timeout=30;Encrypt=False;TrustServerCertificate=True;ApplicationIntent=ReadWrite;MultiSubnetFailover=False";
+        private readonly List<Guid> _tempUsers = new List<Guid>();
+        [TestMethod]
+        public void ShouldCreateShared()
+        {
+            //arrange
+            var user = new User
+            {
+                FirstName = "test",
+                LastName = "test",
+                Login = "login",
+                Password = "password"
+            };
+            var userrepository = new UsersRepository(ConnectionString, new CategoriesRepository(ConnectionString));
+            var result = userrepository.Create(user);
+
+            _tempUsers.Add(user.Id);
+
+            var userFromDb = userrepository.Get(result.Id);
+
+            
+
+            var noterepository = new NotesRepository(new UsersRepository(ConnectionString, new CategoriesRepository(ConnectionString)), ConnectionString);
+            var note = new Note
+            {
+                header = "test",
+                text = "test",
+                Owner = userFromDb,
+                Created = DateTime.Now,
+                Changed = DateTime.Now
+            };
+
+            var noteresult = noterepository.Create(note);
+
+
+            var sharedrepository = new SharedRepository(ConnectionString, new UsersRepository(ConnectionString, new CategoriesRepository(ConnectionString)));
+
+            var share = new Share(result.Id, noteresult.Id);
+           
+            var shareresult=sharedrepository.ShareCreate(share);
+
+
+            //asserts
+            Assert.AreEqual(shareresult.SharedNoteId, noteresult.Id);
+        }
+        [TestMethod]
+        public void ShouldCreateShared_and_CetShared()
+        {
+            var user = new User
+            {
+                FirstName = "test",
+                LastName = "test",
+                Login = "login",
+                Password = "password"
+            };
+            var userrepository = new UsersRepository(ConnectionString, new CategoriesRepository(ConnectionString));
+            var result = userrepository.Create(user);
+
+            _tempUsers.Add(user.Id);
+
+            var userFromDb = userrepository.Get(result.Id);
+
+
+
+            var noterepository = new NotesRepository(new UsersRepository(ConnectionString, new CategoriesRepository(ConnectionString)), ConnectionString);
+            var note = new Note
+            {
+                header = "test",
+                text = "test",
+                Owner = userFromDb,
+                Created = DateTime.Now,
+                Changed = DateTime.Now
+            };
+
+            var noteresult = noterepository.Create(note);
+
+
+            var sharedrepository = new SharedRepository(ConnectionString, new UsersRepository(ConnectionString, new CategoriesRepository(ConnectionString)));
+
+            var share = new Share(result.Id, noteresult.Id);
+            sharedrepository.ShareCreate(share);
+            var shareresult = sharedrepository.GetShares(userFromDb.Id);
+
+            Assert.AreEqual(shareresult.Single().Id, noteresult.Id);
+
+
+        }
+
+        [TestCleanup]
+        public void CleanData()
+        {
+            foreach (var id in _tempUsers)
+                new UsersRepository(ConnectionString, new CategoriesRepository(ConnectionString)).Delete(id);
+        }
+    }
+}
