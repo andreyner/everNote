@@ -63,7 +63,19 @@ namespace Evernote.DataLayer.Sql
                 }
             }
         }
-
-      
+        public void ShareDelete(Share share)
+        {
+            using (var sqlConnection = new SqlConnection(_connectionString))
+            {
+                sqlConnection.Open();
+                using (var command = sqlConnection.CreateCommand())
+                {
+                    command.CommandText = "Delete from Shares where Noteid = @Noteid and Userid=@Userid";
+                    command.Parameters.AddWithValue("@Noteid", share.SharedNoteId);
+                    command.Parameters.AddWithValue("@Userid", share.DestinationUserId);
+                    command.ExecuteNonQuery();
+                }
+            }
+        }
     }
 }

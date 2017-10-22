@@ -97,6 +97,63 @@ namespace Evernote.DataLayer.Sql
             }
         }
 
+        public Category GetCategory(Guid categoryId)
+        {
+
+            using (var sqlConnection = new SqlConnection(_connectionString))
+            {
+                sqlConnection.Open();
+                using (var command = sqlConnection.CreateCommand())
+                {
+                    command.CommandText = "Select * from Category where id=@id";
+                    command.Parameters.AddWithValue("@id", categoryId);
+
+                    using (var reader = command.ExecuteReader())
+                    {
+                        while (reader.Read())
+                        {
+
+                            return new Category
+                            {
+
+                                Id = reader.GetGuid(reader.GetOrdinal("id")),
+                                Name = reader.GetString(reader.GetOrdinal("name")),
+                            };
+                        }
+
+                    }
+                }
+            }
+            throw new ArgumentException($"Категория с id {categoryId} не найдена");
+        }
+
+        public IEnumerable<Category> GetNoteCategories(Guid noteId)
+        {
+            using (var sqlConnection = new SqlConnection(_connectionString))
+            {
+                sqlConnection.Open();
+                using (var command = sqlConnection.CreateCommand())
+                {
+                    command.CommandText = "select categoryid from Mediator where noteid = @noteId";
+                    command.Parameters.AddWithValue("@noteId", noteId);
+
+                    using (var reader = command.ExecuteReader())
+                    {
+                        while (reader.Read())
+                        {
+                            Category category = GetCategory(reader.GetGuid(reader.GetOrdinal("categoryid")));
+                            yield return new Category
+                            {
+                                Name = category.Name,
+                                Id = category.Id
+                                
+                            };
+                        }
+                    }
+                }
+            }
+        }
+
         public IEnumerable<Category> GetUserCategories(Guid userId)
         {
             using (var sqlConnection = new SqlConnection(_connectionString))

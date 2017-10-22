@@ -7,8 +7,24 @@ using Evernote.Model;
 namespace Evernote.DataLayer
 {
    public  interface ISharedRepository
-    {
+    {    
+        /// <summary>
+        /// Создать шару
+        /// </summary>
+        /// <param name="share">Шара</param>
+        /// <returns>Созданная Шара</returns>
         Share ShareCreate(Share share);
+        /// <summary>
+        /// Получить шары пользователя
+        /// </summary>
+        /// <param name="userid"> ид пользователя</param>
+        /// <returns>Все шары</returns>
         IEnumerable<Note> GetShares(Guid userid);
+        /// <summary>
+        /// Удалить шару
+        /// </summary>
+        /// <param name="shareid"> шара</param>
+        void ShareDelete(Share share);
+   
     }
 }

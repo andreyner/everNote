@@ -19,7 +19,7 @@ namespace Evernote.DataLayer.Sql
         
         public Note Create(Note note)
         {
-
+            
             using (var sqlConnection = new SqlConnection(_connectionString))
             {
                 sqlConnection.Open();
@@ -143,20 +143,16 @@ namespace Evernote.DataLayer.Sql
                 }
             }
         }
-        /// <summary>
-        /// добавит копию заметки в мои заметки
-        /// </summary>
-        /// <param name="note"></param>
-        /// <param name="newuserId"></param>
-        /// <returns></returns>
-        public Note MakeMyNote(Note note, Guid newuserId)
+
+        public Note MakeMyNote(Guid noteid, Guid newuserId)
         {
-           note.Owner = _usersRepository.Get(newuserId);
-           var resNote= Create(note);
+            Note note = Get(noteid);
+            var resNote= Create(note);
+           resNote.Owner= _usersRepository.Get(newuserId);
            return resNote;
         }
 
-        public IEnumerable<Note> GetNotesofCategory(Guid categoryId,Guid OwnerId)
+        public IEnumerable<Note> GetNotesofCategory(Guid categoryId)
         {
             using (var sqlConnection = new SqlConnection(_connectionString))
             {
@@ -177,7 +173,6 @@ namespace Evernote.DataLayer.Sql
                                 header = reader.GetString(reader.GetOrdinal("header")),
                                 text = reader.GetString(reader.GetOrdinal("text")),
                                 Created = reader.GetDateTime(reader.GetOrdinal("date_created")),
-                                Owner = _usersRepository.Get(OwnerId),
                                 Changed = reader.GetDateTime(reader.GetOrdinal("date_changed"))
                             };
                         }
