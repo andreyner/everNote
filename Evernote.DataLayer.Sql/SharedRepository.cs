@@ -49,15 +49,7 @@ namespace Evernote.DataLayer.Sql
                         {
 
                             yield return new NotesRepository(_usersRepository, _connectionString).Get(reader.GetGuid(reader.GetOrdinal("Noteid")));
-                            //{
 
-                                //Id = reader.GetGuid(reader.GetOrdinal("id")),
-                                //header = reader.GetString(reader.GetOrdinal("header")),
-                                //text = reader.GetString(reader.GetOrdinal("text")),
-                                //Created = reader.GetDateTime(reader.GetOrdinal("date_created")),
-                                //Owner = _usersRepository.Get(userid),
-                                //Changed = reader.GetDateTime(reader.GetOrdinal("date_changed"))
-                            //};
                         }
                     }
                 }

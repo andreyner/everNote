@@ -69,7 +69,8 @@ namespace Evernote.DataLayer.Sql
                     {
                         while (reader.Read())
                         {
-                            
+                            if (!reader.Read())
+                                throw new ArgumentException($"Заметка с id {noteid} не найдена");
                             return new Note
                             {
 
@@ -144,7 +145,7 @@ namespace Evernote.DataLayer.Sql
             }
         }
 
-        public Note MakeMyNote(Guid noteid, Guid newuserId)
+        public Note CopyNoteToUser(Guid noteid, Guid newuserId)
         {
             Note note = Get(noteid);
             var resNote= Create(note);

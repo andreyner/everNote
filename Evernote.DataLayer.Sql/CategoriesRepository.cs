@@ -112,7 +112,8 @@ namespace Evernote.DataLayer.Sql
                     {
                         while (reader.Read())
                         {
-
+                            if (!reader.Read())
+                                throw new ArgumentException($"Категория с id {categoryId} не найдена");
                             return new Category
                             {
 

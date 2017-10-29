@@ -37,7 +37,7 @@ namespace Evernote.DataLayer
         /// <param name="noteid">ид заметки</param>
         /// <param name="newuserId"> ид пользователя</param>
         /// <returns></returns>
-        Note MakeMyNote(Guid noteid, Guid newuserId);
+        Note CopyNoteToUser(Guid noteid, Guid newuserId);
         /// <summary>
         /// Получить заметки категории
         /// </summary>

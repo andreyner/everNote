@@ -1,4 +1,5 @@
-﻿using Evernote.DataLayer;
+﻿using Evernote.API.Helper;
+using Evernote.DataLayer;
 using Evernote.DataLayer.Sql;
 using System;
 using System.Collections.Generic;
@@ -9,6 +10,7 @@ using System.Web.Http;
 
 namespace Evernote.API.Controllers
 {
+    [FilterExceptions]
     public class SharesController : ApiController
     {
 
@@ -22,8 +24,15 @@ namespace Evernote.API.Controllers
 
         [HttpPost]
         [Route("api/shares")]
-        public Share Post([FromBody] Share share)
+        public Share ShareCreate([FromBody] Share share)
         {
+            Logger.Log.Instance.Info("Создание шары для пользователя с id: {0} c заметкой id которой {1}", share.DestinationUserId,share.SharedNoteId);
+            string errors = ModelValidator.Validate(ModelState);
+            if (errors != null)
+            {
+                Logger.Log.Instance.Error(errors);
+                throw new HttpResponseException(Request.CreateErrorResponse(HttpStatusCode.BadRequest, ModelState));
+            }
             return _sharesRepository.ShareCreate(share);
         }
 
@@ -31,14 +40,16 @@ namespace Evernote.API.Controllers
         [Route("api/shares/user/{id}")]
         public IEnumerable<Note> GetShares(Guid userid)
         {
+            Logger.Log.Instance.Info("Получение шары пользователя с id: {0}", userid);
             return _sharesRepository.GetShares(userid);
         }
 
         [HttpDelete]
-        [Route("api/shares/delete")]
+        [Route("api/shares")]
         public void Sharesdelete([FromBody]Share share)
         {
-             _sharesRepository.ShareDelete(share);
+             Logger.Log.Instance.Info("Удаление шары для пользователя с id: {0} c заметкой id которой {1}", share.DestinationUserId, share.SharedNoteId);
+            _sharesRepository.ShareDelete(share);
         }
 
     }

@@ -1,4 +1,5 @@
-﻿using Evernote.DataLayer;
+﻿using Evernote.API.Helper;
+using Evernote.DataLayer;
 using Evernote.DataLayer.Sql;
 using System;
 using System.Collections.Generic;
@@ -9,6 +10,7 @@ using System.Web.Http;
 
 namespace Evernote.API.Controllers
 {
+    [FilterExceptions]
     public class NotesController : ApiController
     {
 
@@ -22,30 +24,34 @@ namespace Evernote.API.Controllers
         }
 
         [HttpPost]
-        [Route("api/notes/create")]
-        public Note Post([FromBody] Note note)
+        [Route("api/notes")]
+        public Note Create([FromBody] Note note)
         {
+            Logger.Log.Instance.Info("Создание заметки c заголовком {0} ",note.header);
             return _notesRepository.Create(note);
         }
 
         [HttpPost]
         [Route("api/notes/{id}/newuser/{id}")]
-        public Note Post(Guid noteid, Guid newuserId)
+        public Note CopyNoteToUser(Guid noteid, Guid newuserId)
         {
-            return _notesRepository.MakeMyNote(noteid, newuserId);
+            Logger.Log.Instance.Info("Копировать заметку c id: {0} пользователю с Id: {1}", noteid,newuserId);
+            return _notesRepository.CopyNoteToUser(noteid, newuserId);
         }
 
         [HttpPut]
         [Route("api/notes/update")]
         public Note UpdateNote([FromBody] Note note)
         {
+            Logger.Log.Instance.Info("Удаление заметки с Id: {0}", note.Id);
             return _notesRepository.UpdateNote(note);
         }
 
         [HttpDelete]
-        [Route("api/notes/{id}/delete")]
+        [Route("api/notes/{id}")]
         public void Delete(Guid id)
         {
+             Logger.Log.Instance.Info("Удаление заметки с Id: {0}", id);
             _notesRepository.Delete(id);
         }
 
@@ -53,6 +59,7 @@ namespace Evernote.API.Controllers
         [Route("api/notes/{id}/users")]
         public IEnumerable<Note> GetUserNotes(Guid userid)
         {
+            Logger.Log.Instance.Info("Получение заметок пользователя с Id: {0}", userid);
             return _notesRepository.GetUserNotes(userid);
         }
 
@@ -60,6 +67,7 @@ namespace Evernote.API.Controllers
         [Route("api/notes/{id}/categories")]
         public IEnumerable<Note> GetNotesofCategory(Guid categoryId)
         {
+            Logger.Log.Instance.Info("Получение ззаметок категории с Id: {0}", categoryId);
             return _notesRepository.GetNotesofCategory(categoryId);
         }
     }

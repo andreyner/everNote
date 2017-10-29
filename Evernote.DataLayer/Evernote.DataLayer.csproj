@@ -65,7 +65,6 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="App_Start\SwaggerConfig.cs" />
     <Compile Include="INotesRepository.cs" />
     <Compile Include="ICategoriesRepository.cs" />
     <Compile Include="ISharedRepository.cs" />
@@ -81,6 +80,9 @@
   <ItemGroup>
     <None Include="app.config" />
     <None Include="packages.config" />
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="App_Start\" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
