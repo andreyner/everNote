@@ -69,8 +69,7 @@ namespace Evernote.DataLayer.Sql
                     {
                         while (reader.Read())
                         {
-                            if (!reader.Read())
-                                throw new ArgumentException($"Заметка с id {noteid} не найдена");
+                          
                             return new Note
                             {
 
@@ -89,37 +88,6 @@ namespace Evernote.DataLayer.Sql
                 throw new ArgumentException($"Заметка с id {noteid} не найдена");
         }
 
-        public IEnumerable<Note> GetUserNotes(Guid userId)
-        {
-            using (var sqlConnection = new SqlConnection(_connectionString))
-            {
-                sqlConnection.Open();
-                using (var command = sqlConnection.CreateCommand())
-                {
-                    command.CommandText = "select * from Note where userId = @userId";
-                    command.Parameters.AddWithValue("@userId", userId);
-
-                    using (var reader = command.ExecuteReader())
-                    {
-                        while (reader.Read())
-                        {
-                            yield return new Note
-                            {
-
-                                Id = reader.GetGuid(reader.GetOrdinal("id")),
-                                header = reader.GetString(reader.GetOrdinal("header")),
-                                text = reader.GetString(reader.GetOrdinal("text")),
-                                Created = reader.GetDateTime(reader.GetOrdinal("date_created")),
-                                Owner = _usersRepository.Get(userId),
-                                Changed = reader.GetDateTime(reader.GetOrdinal("date_changed"))
-                            };
-                        }
-                    }
-                }
-            }
-
-        }
-
         public Note UpdateNote(Note note)
         {
             using (var sqlConnection = new SqlConnection(_connectionString))
@@ -127,18 +95,15 @@ namespace Evernote.DataLayer.Sql
                 sqlConnection.Open();
                 using (var command = sqlConnection.CreateCommand())
                 {
-                    note.Id = Guid.NewGuid();
                     command.CommandText = "Update Note Set" +
                         " header=@header, " +
                         " text=@text," +
-                        " data_created=@data_created," +
-                        " data_changed=@data_changed " +
+                        " date_changed=@date_changed " +
                         " Where id=@id";
                     command.Parameters.AddWithValue("@id", note.Id);
                     command.Parameters.AddWithValue("@header", note.header);
                     command.Parameters.AddWithValue("@text", note.text);
-                    command.Parameters.AddWithValue("@data_created", note.Created);
-                    command.Parameters.AddWithValue("@data_changed", note.Created);
+                    command.Parameters.AddWithValue("@date_changed", note.Changed);
                     command.ExecuteNonQuery();
                     return note;
                 }
@@ -153,35 +118,6 @@ namespace Evernote.DataLayer.Sql
            return resNote;
         }
 
-        public IEnumerable<Note> GetNotesofCategory(Guid categoryId)
-        {
-            using (var sqlConnection = new SqlConnection(_connectionString))
-            {
-                sqlConnection.Open();
-                using (var command = sqlConnection.CreateCommand())
-                {
-                    command.CommandText = "select * from Note where categoryid = @categoryid";
-                    command.Parameters.AddWithValue("@categoryid", categoryId);
 
-                    using (var reader = command.ExecuteReader())
-                    {
-                        while (reader.Read())
-                        {
-                            yield return new Note
-                            {
-
-                                Id = reader.GetGuid(reader.GetOrdinal("id")),
-                                header = reader.GetString(reader.GetOrdinal("header")),
-                                text = reader.GetString(reader.GetOrdinal("text")),
-                                Created = reader.GetDateTime(reader.GetOrdinal("date_created")),
-                                Changed = reader.GetDateTime(reader.GetOrdinal("date_changed"))
-                            };
-                        }
-                    }
-                }
-            }
-        }
-
-       
     }
 }

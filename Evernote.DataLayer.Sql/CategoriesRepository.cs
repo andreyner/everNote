@@ -5,19 +5,22 @@ using System.Data.SqlClient;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Web.Http;
 
 namespace Evernote.DataLayer.Sql
 {
    public class CategoriesRepository : ICategoriesRepository
     {
         private readonly string _connectionString;
+        private readonly INotesRepository _notesRepository;
 
-        public CategoriesRepository(string connectionString)
+        public CategoriesRepository(string connectionString,INotesRepository _notesRepository)
         {
-            _connectionString = connectionString;
+            this. _connectionString = connectionString;
+            this._notesRepository = _notesRepository;
         }
 
-        public void AddNoteintoCategory(Guid noteId, Guid categoryId)
+        public void AddNoteintoCategory( Guid categoryId,Guid noteId)
         {
             using (var sqlConnection = new SqlConnection(_connectionString))
             {
@@ -29,40 +32,6 @@ namespace Evernote.DataLayer.Sql
                     command.Parameters.AddWithValue("@noteid", noteId);
                     command.ExecuteNonQuery();
                 
-                }
-                using (var command = sqlConnection.CreateCommand())
-                {
-                    command.CommandText = "Update Note Set" +
-                        " categoryid=@categoryid " +
-                        " Where id=@id";
-                    command.Parameters.AddWithValue("@id", noteId);
-                    command.Parameters.AddWithValue("@categoryid",categoryId);
-
-                    command.ExecuteNonQuery();                   
-                }
-            }
-        }
-
-        public Category Create(Guid userId, string name)
-        {
-            using (var sqlConnection = new SqlConnection(_connectionString))
-            {
-                sqlConnection.Open();
-                using (var command = sqlConnection.CreateCommand())
-                {
-                    command.CommandText = "insert into Category (id, name, Userid) values (@id, @name, @Userid)";
-
-                    var category = new Category
-                    {
-                        Id = Guid.NewGuid(),
-                        Name = name
-                    };
-                    command.Parameters.AddWithValue("@UserId", userId);
-                    command.Parameters.AddWithValue("@name", category.Name);
-                    command.Parameters.AddWithValue("@id", category.Id);
-                    command.ExecuteNonQuery();
-
-                    return category;
                 }
             }
         }
@@ -112,8 +81,8 @@ namespace Evernote.DataLayer.Sql
                     {
                         while (reader.Read())
                         {
-                            if (!reader.Read())
-                                throw new ArgumentException($"Категория с id {categoryId} не найдена");
+                            ////if (!reader.Read())
+                            ////    throw new ArgumentException($"Категория с id {categoryId} не найдена");
                             return new Category
                             {
 
@@ -128,7 +97,7 @@ namespace Evernote.DataLayer.Sql
             throw new ArgumentException($"Категория с id {categoryId} не найдена");
         }
 
-        public IEnumerable<Category> GetNoteCategories(Guid noteId)
+        public IEnumerable<Category> GetCategoriesofNote(Guid noteId)
         {
             using (var sqlConnection = new SqlConnection(_connectionString))
             {
@@ -154,30 +123,93 @@ namespace Evernote.DataLayer.Sql
                 }
             }
         }
-
-        public IEnumerable<Category> GetUserCategories(Guid userId)
+ 
+        public IEnumerable<Note> GetNotesofCategory(Guid categoryId)
         {
             using (var sqlConnection = new SqlConnection(_connectionString))
             {
                 sqlConnection.Open();
                 using (var command = sqlConnection.CreateCommand())
                 {
-                    command.CommandText = "select id, name from Category where Userid = @userId";
-                    command.Parameters.AddWithValue("@userId", userId);
+                    Category temp = GetCategory(categoryId);
+                    command.CommandText = "select * from Mediator where categoryid = @categoryid";
+                    command.Parameters.AddWithValue("@categoryid", categoryId);
 
                     using (var reader = command.ExecuteReader())
                     {
                         while (reader.Read())
                         {
-                            yield return new Category
-                            {
-                                Name = reader.GetString(reader.GetOrdinal("name")),
-                                Id = reader.GetGuid(reader.GetOrdinal("id"))
-                            };
+                            
+                            yield return _notesRepository.Get(reader.GetGuid(reader.GetOrdinal("noteid")));
+                            
                         }
                     }
                 }
             }
         }
+
+        public IEnumerable<Category> GetfreeCategoriesofNote(Guid noteId)
+        {
+            using (var sqlConnection = new SqlConnection(_connectionString))
+            {
+                sqlConnection.Open();
+                using (var command = sqlConnection.CreateCommand())
+                {
+                    command.CommandText = @"select B.[id] " +
+                        "from Mediator A " +
+                        "RIGHT JOIN Category B " +
+                        "ON A.[categoryid]=B.[id] AND A.[noteid]=@noteId " +
+                        "where A.[categoryid] IS NULL";
+                    //command.CommandText = @"select Mediator.categoryid " +
+                    //    "from Mediator " +
+                    //    "RIGHT JOIN Category " +
+                    //    "ON Mediator.categoryid=Category.id AND Mediator.noteid=@noteId " +
+                    //    "where Mediator.categoryid IS NULL";
+                    command.Parameters.AddWithValue("@noteId", noteId);
+
+                    using (var reader = command.ExecuteReader())
+                    {
+                        while (reader.Read())
+                        {
+                           
+                            Category category = GetCategory(reader.GetGuid(reader.GetOrdinal("id")));
+                            yield return new Category
+                            {
+                                Name = category.Name,
+                                Id = category.Id
+
+                            };
+
+                        }
+
+                    }
+                }
+
+            }
+
+        }
+
+        public Category Update( Category category)
+        {
+            using (var sqlConnection = new SqlConnection(_connectionString))
+            {
+                sqlConnection.Open();
+                using (var command = sqlConnection.CreateCommand())
+                {
+                    command.CommandText = "Update Category Set" +
+                        " name=@name " +
+                        " Where id=@id";
+                    command.Parameters.AddWithValue("@id", category.Id);
+                    command.Parameters.AddWithValue("@name", category.Name);
+                    command.ExecuteNonQuery();
+                    return category;
+                }
+            }
+        }
+
+  
     }
+
 }
+    
+

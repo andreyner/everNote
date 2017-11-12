@@ -7,20 +7,8 @@ using System.Threading.Tasks;
 namespace Evernote.DataLayer
 {
    public interface ICategoriesRepository
-    {   
-        /// <summary>
-        /// Создание категории пользователя
-        /// </summary>
-        /// <param name="userId"> ид пользователя</param>
-        /// <param name="name"> имя категории</param>
-        /// <returns>Созданная категория</returns>
-        Category Create(Guid userId, string name);
-        /// <summary>
-        /// Получение всех категорий пользователя
-        /// </summary>
-        /// <param name="userId">ид пользователя</param>
-        /// <returns>Категории пользователя</returns>
-        IEnumerable<Category> GetUserCategories(Guid userId);
+    {
+
         /// <summary>
         /// Удаление категории
         /// </summary>
@@ -43,12 +31,31 @@ namespace Evernote.DataLayer
         /// </summary>
         /// <param name="noteId">ид заметки</param>
         /// <returns> Все категории</returns>
-        IEnumerable<Category> GetNoteCategories(Guid noteId);
+        IEnumerable<Category> GetCategoriesofNote(Guid noteId);
         /// <summary>
         /// Получение категории по ид
         /// </summary>
         /// <param name="categoryId">ид категории</param>
         /// <returns>Категория</returns>
         Category GetCategory(Guid categoryId);
+        /// <summary>
+        /// Получить заметки категории
+        /// </summary>
+        /// <param name="categoryId">ид категории</param>
+        /// <returns> Все заметки</returns>
+        IEnumerable<Note> GetNotesofCategory(Guid categoryId);
+        /// <summary>
+        /// Получить категории, где нет заметки
+        /// </summary>
+        /// <param name="noteId"> id заметки</param>
+        /// <returns> категории</returns>
+        IEnumerable<Category> GetfreeCategoriesofNote(Guid noteId);
+        /// <summary>
+        /// Обновление категории
+        /// </summary>
+        /// <param name="category"> Категория</param>
+        /// <returns> Категория</returns>
+        Category Update(Category category);
+
     }
 }

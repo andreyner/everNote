@@ -20,12 +20,6 @@ namespace Evernote.DataLayer
         /// <param name="id">ид заметки</param>
         void Delete(Guid id);
         /// <summary>
-        /// Получение заметок пользователя
-        /// </summary>
-        /// <param name="userId">ид пользователя</param>
-        /// <returns></returns>
-        IEnumerable<Note> GetUserNotes(Guid userId);
-        /// <summary>
         /// Обновление заметки
         /// </summary>
         /// <param name="note">ид заметки</param>
@@ -39,10 +33,11 @@ namespace Evernote.DataLayer
         /// <returns></returns>
         Note CopyNoteToUser(Guid noteid, Guid newuserId);
         /// <summary>
-        /// Получить заметки категории
+        /// Получение заметки по id
         /// </summary>
-        /// <param name="categoryId">ид категории</param>
-        /// <returns> Все заметки</returns>
-        IEnumerable<Note> GetNotesofCategory(Guid categoryId);
+        /// <param name="noteid"> id заметки</param>
+        /// <returns>Объект заметки</returns>
+        Note Get(Guid noteid);
+
     }
 }

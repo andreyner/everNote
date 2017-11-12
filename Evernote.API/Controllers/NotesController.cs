@@ -1,6 +1,7 @@
 ﻿using Evernote.API.Helper;
 using Evernote.DataLayer;
 using Evernote.DataLayer.Sql;
+using Evernote.Model;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -19,7 +20,7 @@ namespace Evernote.API.Controllers
 
         public NotesController()
         {
-            _notesRepository = new NotesRepository(new UsersRepository(ConnectionString,new CategoriesRepository(ConnectionString)), ConnectionString );
+            _notesRepository = new NotesRepository(new UsersRepository(ConnectionString), ConnectionString );
 
         }
 
@@ -31,19 +32,19 @@ namespace Evernote.API.Controllers
             return _notesRepository.Create(note);
         }
 
-        [HttpPost]
-        [Route("api/notes/{id}/newuser/{id}")]
-        public Note CopyNoteToUser(Guid noteid, Guid newuserId)
-        {
-            Logger.Log.Instance.Info("Копировать заметку c id: {0} пользователю с Id: {1}", noteid,newuserId);
-            return _notesRepository.CopyNoteToUser(noteid, newuserId);
-        }
+        //[HttpPost]
+        //[Route("api/notes/{id}/newuser/{id}")]
+        //public Note CopyNoteToUser(Guid noteid, Guid newuserId)
+        //{
+        //    Logger.Log.Instance.Info("Копировать заметку c id: {0} пользователю с Id: {1}", noteid,newuserId);
+        //    return _notesRepository.CopyNoteToUser(noteid, newuserId);
+        //}
 
         [HttpPut]
-        [Route("api/notes/update")]
+        [Route("api/notes")]
         public Note UpdateNote([FromBody] Note note)
         {
-            Logger.Log.Instance.Info("Удаление заметки с Id: {0}", note.Id);
+            Logger.Log.Instance.Info("Обновление заметки с Id: {0}", note.Id);
             return _notesRepository.UpdateNote(note);
         }
 
@@ -56,19 +57,12 @@ namespace Evernote.API.Controllers
         }
 
         [HttpGet]
-        [Route("api/notes/{id}/users")]
-        public IEnumerable<Note> GetUserNotes(Guid userid)
+        [Route("api/notes/{id}")]
+        public Note GetNote(Guid id)
         {
-            Logger.Log.Instance.Info("Получение заметок пользователя с Id: {0}", userid);
-            return _notesRepository.GetUserNotes(userid);
+            Logger.Log.Instance.Info("Получение заметки с Id: {0}", id);
+            return _notesRepository.Get(id);
         }
 
-        [HttpGet]
-        [Route("api/notes/{id}/categories")]
-        public IEnumerable<Note> GetNotesofCategory(Guid categoryId)
-        {
-            Logger.Log.Instance.Info("Получение ззаметок категории с Id: {0}", categoryId);
-            return _notesRepository.GetNotesofCategory(categoryId);
-        }
     }
 }

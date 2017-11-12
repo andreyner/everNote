@@ -13,6 +13,7 @@ namespace Evernote.DataLayer.Sql.Tests
 
         private const string ConnectionString = @"Data Source=ANDREY-PK\SQLEXPRESS;Initial Catalog=EverNoteDb;Integrated Security=True;Connect Timeout=30;Encrypt=False;TrustServerCertificate=True;ApplicationIntent=ReadWrite;MultiSubnetFailover=False";
         private readonly List<Guid> _tempUsers = new List<Guid>();
+
         [TestMethod]
         public void ShouldCreateNote()
         {
@@ -46,12 +47,13 @@ namespace Evernote.DataLayer.Sql.Tests
           
            var noteresult= noterepository.Create(note);
 
-            var notefromDb = noterepository.GetUserNotes(userFromDb.Id).Single();
+            var notefromDb = userrepository.GetUserNotes(userFromDb.Id).Single();
 
             //asserts 2
             Assert.AreEqual(notefromDb.text,noteresult.text);
 
         }
+
         [TestCleanup]
         public void CleanData()
         {

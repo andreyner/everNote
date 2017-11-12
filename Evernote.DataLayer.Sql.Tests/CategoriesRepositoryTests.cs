@@ -30,7 +30,7 @@ namespace Evernote.DataLayer.Sql.Tests
             var userFromDb = userrepository.Get(result.Id);
             var categoriesRepository = new CategoriesRepository(ConnectionString);
             string categoryname = "testcategory";
-            var creatcategory = categoriesRepository.Create(userFromDb.Id, categoryname);
+            var creatcategory = userrepository.CreateCategory(userFromDb.Id, categoryname);
 
             var noterepository = new NotesRepository(new UsersRepository(ConnectionString, new CategoriesRepository(ConnectionString)), ConnectionString);
             var note = new Note
@@ -69,7 +69,7 @@ namespace Evernote.DataLayer.Sql.Tests
             var userFromDb = userrepository.Get(result.Id);
             var categoriesRepository = new CategoriesRepository(ConnectionString);
             string categoryname = "testcategory";
-            var creatcategory = categoriesRepository.Create(userFromDb.Id, categoryname);
+            var creatcategory = userrepository.CreateCategory(userFromDb.Id, categoryname);
             var creatcategoryres= categoriesRepository.GetCategory(creatcategory.Id);
 
             Assert.AreEqual(creatcategory.Id, creatcategoryres.Id);
@@ -97,7 +97,7 @@ namespace Evernote.DataLayer.Sql.Tests
             var userFromDb = userrepository.Get(result.Id);
             var categoriesRepository = new CategoriesRepository(ConnectionString);
             string categoryname = "testcategory";
-            var creatcategory = categoriesRepository.Create(userFromDb.Id, categoryname);
+            var creatcategory = userrepository.CreateCategory(userFromDb.Id, categoryname);
 
             var noterepository = new NotesRepository(new UsersRepository(ConnectionString, new CategoriesRepository(ConnectionString)), ConnectionString);
             var note = new Note

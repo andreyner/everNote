@@ -19,12 +19,12 @@ namespace Evernote.API.Controllers
 
         public SharesController()
         {
-            _sharesRepository = new SharedRepository(ConnectionString, new UsersRepository(ConnectionString,new CategoriesRepository(ConnectionString)));
+            _sharesRepository = new SharedRepository(ConnectionString, new UsersRepository(ConnectionString));
         }
 
         [HttpPost]
         [Route("api/shares")]
-        public Share ShareCreate([FromBody] Share share)
+        public Share CreatShare([FromBody] Share share)
         {
             Logger.Log.Instance.Info("Создание шары для пользователя с id: {0} c заметкой id которой {1}", share.DestinationUserId,share.SharedNoteId);
             string errors = ModelValidator.Validate(ModelState);
@@ -38,10 +38,10 @@ namespace Evernote.API.Controllers
 
         [HttpGet]
         [Route("api/shares/user/{id}")]
-        public IEnumerable<Note> GetShares(Guid userid)
+        public IEnumerable<Note> GetSharesofUser(Guid id)
         {
-            Logger.Log.Instance.Info("Получение шары пользователя с id: {0}", userid);
-            return _sharesRepository.GetShares(userid);
+            Logger.Log.Instance.Info("Получение шары пользователя с id: {0}", id);
+            return _sharesRepository.GetShares(id);
         }
 
         [HttpDelete]

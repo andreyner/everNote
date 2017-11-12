@@ -16,8 +16,10 @@ namespace Evernote
         public string FirstName { get; set; }
 
         public string LastName { get; set; }
+
         [Required(ErrorMessage = "Укажите логин пользователя!")]
         public string Login { get; set; }
+
         [Required(ErrorMessage = "Укажите пароль пользователя!")]
         public string Password { get; set; }
 

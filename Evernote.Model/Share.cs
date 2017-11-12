@@ -9,14 +9,10 @@ namespace Evernote
 {
     public class Share
     {
-        public Share(Guid destinationUserId, Guid sharedNoteId)
-        {
-            this.DestinationUserId = destinationUserId;
-            this.SharedNoteId = sharedNoteId;
-        }
+
         [Required(ErrorMessage = "Укажите пользователя с которым нужно поделиться!")]
-        public Guid DestinationUserId { get; private set;}
+        public Guid DestinationUserId { get; set; }
         [Required(ErrorMessage = "Укажите заметку которой нужно поделиться!")]
-        public Guid SharedNoteId { get; private set; }
+        public Guid SharedNoteId { get; set; }
     }
 }

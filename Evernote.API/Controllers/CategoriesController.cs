@@ -20,30 +20,16 @@ namespace Evernote.API.Controllers
 
         public CategoriesController()
         {
-            _categoriesRepository = new CategoriesRepository(ConnectionString);
+            _categoriesRepository = new CategoriesRepository(ConnectionString,new NotesRepository(new UsersRepository(ConnectionString),ConnectionString));
 
-        }
-
-        [HttpPost]
-        [Route("api/categories/{id}/{name}")]
-        public Category Create([FromBody] Category category,Guid ownerid)
-        {
-            Logger.Log.Instance.Info("Создание категории c именем {0}", category.Name);
-            string errors = ModelValidator.Validate(ModelState);
-            if (errors != null)
-            {
-                Logger.Log.Instance.Error(errors);
-                throw new HttpResponseException(Request.CreateErrorResponse(HttpStatusCode.BadRequest, ModelState));
-            }
-                return _categoriesRepository.Create(ownerid, category.Name);
         }
 
         [HttpDelete]
         [Route("api/categories/{id}")]
-        public void Delete(Guid categoryId)
+        public void Delete(Guid id)
         {
-            Logger.Log.Instance.Info("Удаление категории c id: {0} ", categoryId);
-            _categoriesRepository.Delete(categoryId);
+            Logger.Log.Instance.Info("Удаление категории c id: {0} ", id);
+            _categoriesRepository.Delete(id);
         }
 
         [HttpDelete]
@@ -55,28 +41,52 @@ namespace Evernote.API.Controllers
         }
 
         [HttpPost]
-        [Route("api/categories/{categoryId}/add/{noteId}")]
-        public void AddNoteintoCategory(Guid categoryId, Guid noteId)
+        [Route("api/categories/{id}/add")]
+        public void AddNoteintoCategory(Guid id, [FromBody] Note note)
         {
-            Logger.Log.Instance.Info("Добавление заметкм с id: {0} в категорию c id: {1}", noteId, categoryId);
-            string errors = ModelValidator.Validate(ModelState);
-            _categoriesRepository.AddNoteintoCategory(categoryId, noteId);
+            Logger.Log.Instance.Info("Добавление заметкм с id: {0} в категорию c id: {1}", note.Id, id);
+           // string errors = ModelValidator.Validate(ModelState);
+            _categoriesRepository.AddNoteintoCategory(id, note.Id);
         }
 
         [HttpGet]
-        [Route("api/categories/user/{id}")]
-        public IEnumerable<Category> GetNotesofCategory(Guid userId)
+        [Route("api/categories/{id}/notes")]
+        public IEnumerable<Note> GetNotesofCategory(Guid id)
         {
-            Logger.Log.Instance.Info("Получить категории пользователя с id: {0}",userId);
-            return _categoriesRepository.GetUserCategories(userId);
+            Logger.Log.Instance.Info("Получение заметок категории с Id: {0}", id);
+            return _categoriesRepository.GetNotesofCategory(id);
         }
 
         [HttpGet]
         [Route("api/categories/note/{id}")]
-        public IEnumerable<Category> GetCategoryofNotes(Guid noteId)
+        public IEnumerable<Category> GetCategoriesofNote(Guid id)
         {
-            Logger.Log.Instance.Info("Получить категории заметки с id: {0}", noteId);
-            return _categoriesRepository.GetNoteCategories(noteId);
+            Logger.Log.Instance.Info("Получить категории заметки с id: {0}", id);
+            return _categoriesRepository.GetCategoriesofNote(id);
+        }
+
+        [HttpGet]
+        [Route("api/categories/free/note/{id}")]
+        public IEnumerable<Category> GetfreeCategoriesofNote(Guid id)
+        {
+            Logger.Log.Instance.Info("Получить категории не принадлжежащие заметке с id: {0}", id);
+            return _categoriesRepository.GetfreeCategoriesofNote(id);
+        }
+
+        [HttpPut]
+        [Route("api/categories")]
+        public Category CategoryUpdate([FromBody] Category category)
+        {
+            Logger.Log.Instance.Info("Обновление категории с названием: {0}", category.Name);
+            return _categoriesRepository.Update(category);
+        }
+
+        [HttpGet]
+        [Route("api/categories/{id}")]
+        public Category GetCategory(Guid id)
+        {
+            Logger.Log.Instance.Info("Получение категории с id: {0}", id);
+            return _categoriesRepository.GetCategory(id);
         }
 
     }
