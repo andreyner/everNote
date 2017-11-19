@@ -45,11 +45,12 @@ namespace Evernote.DataLayer
         /// <returns> Все заметки</returns>
         IEnumerable<Note> GetNotesofCategory(Guid categoryId);
         /// <summary>
-        /// Получить категории, где нет заметки
+        /// Получение категорий пользователя где нет заметки
         /// </summary>
         /// <param name="noteId"> id заметки</param>
-        /// <returns> категории</returns>
-        IEnumerable<Category> GetfreeCategoriesofNote(Guid noteId);
+        /// <param name="userid"> id владелеца заметки</param>
+        /// <returns> Свободные категории категории для заметки </returns>
+        IEnumerable<Category> GetfreeCategoriesofNote(Guid noteId, Guid userid);
         /// <summary>
         /// Обновление категории
         /// </summary>

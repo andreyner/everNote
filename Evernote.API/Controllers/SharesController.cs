@@ -14,12 +14,12 @@ namespace Evernote.API.Controllers
     public class SharesController : ApiController
     {
 
-        private const string ConnectionString = @"Data Source=ANDREY-PK\SQLEXPRESS;Initial Catalog=EverNoteDb;Integrated Security=True;Connect Timeout=30;Encrypt=False;TrustServerCertificate=True;ApplicationIntent=ReadWrite;MultiSubnetFailover=False";
+      
         private readonly ISharedRepository _sharesRepository;
 
         public SharesController()
         {
-            _sharesRepository = new SharedRepository(ConnectionString, new UsersRepository(ConnectionString));
+            _sharesRepository = new SharedRepository(new UsersRepository());
         }
 
         [HttpPost]

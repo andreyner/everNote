@@ -4,6 +4,7 @@ using Evernote.DataLayer.Sql;
 using Evernote.Model;
 using System;
 using System.Collections.Generic;
+using System.Configuration;
 using System.Data.SqlClient;
 using System.Linq;
 using System.Net;
@@ -17,12 +18,11 @@ namespace Evernote.API.Controllers
     public class UsersController : ApiController
     {
 
-        private const string ConnectionString = @"Data Source=ANDREY-PK\SQLEXPRESS;Initial Catalog=EverNoteDb;Integrated Security=True;Connect Timeout=30;Encrypt=False;TrustServerCertificate=True;ApplicationIntent=ReadWrite;MultiSubnetFailover=False";
         private readonly IUsersRepository _usersRepository;
 
         public UsersController()
         {
-            _usersRepository = new UsersRepository(ConnectionString);
+            _usersRepository = new UsersRepository();
         }
 
         [HttpGet]

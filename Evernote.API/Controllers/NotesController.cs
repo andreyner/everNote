@@ -15,12 +15,12 @@ namespace Evernote.API.Controllers
     public class NotesController : ApiController
     {
 
-        private const string ConnectionString = @"Data Source=ANDREY-PK\SQLEXPRESS;Initial Catalog=EverNoteDb;Integrated Security=True;Connect Timeout=30;Encrypt=False;TrustServerCertificate=True;ApplicationIntent=ReadWrite;MultiSubnetFailover=False";
+       
         private readonly INotesRepository _notesRepository;
 
         public NotesController()
         {
-            _notesRepository = new NotesRepository(new UsersRepository(ConnectionString), ConnectionString );
+            _notesRepository = new NotesRepository(new UsersRepository());
 
         }
 
@@ -31,14 +31,6 @@ namespace Evernote.API.Controllers
             Logger.Log.Instance.Info("Создание заметки c заголовком {0} ",note.header);
             return _notesRepository.Create(note);
         }
-
-        //[HttpPost]
-        //[Route("api/notes/{id}/newuser/{id}")]
-        //public Note CopyNoteToUser(Guid noteid, Guid newuserId)
-        //{
-        //    Logger.Log.Instance.Info("Копировать заметку c id: {0} пользователю с Id: {1}", noteid,newuserId);
-        //    return _notesRepository.CopyNoteToUser(noteid, newuserId);
-        //}
 
         [HttpPut]
         [Route("api/notes")]

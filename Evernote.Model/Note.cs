@@ -17,7 +17,7 @@ namespace Evernote
         public string text { get; set; }
 
         public User Owner { get; set; }
-        [Required(ErrorMessage = "Дата создания не может быть пустой!")]
+
         public DateTime Created { get; set; }
 
         public DateTime Changed { get; set; }

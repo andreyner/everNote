@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Configuration;
 using System.Data.SqlClient;
 using System.Linq;
 using System.Text;
@@ -11,12 +12,16 @@ namespace Evernote.DataLayer.Sql
     {
         private readonly string _connectionString;
         private readonly IUsersRepository _usersRepository;
-        public NotesRepository(IUsersRepository _usersRepository, string connectionString)
+        public NotesRepository(IUsersRepository _usersRepository)
         {
             this._usersRepository = _usersRepository;
-            this._connectionString = connectionString;
+            this._connectionString = ConfigurationManager.ConnectionStrings["DefaultConnection"].ConnectionString;
         }
-        
+        /// <summary>
+        /// создание заметки
+        /// </summary>
+        /// <param name="note">заметка</param>
+        /// <returns>созданная заметка</returns>
         public Note Create(Note note)
         {
             
@@ -39,7 +44,10 @@ namespace Evernote.DataLayer.Sql
             }
           
         }
-
+        /// <summary>
+        /// удалени заметки по id
+        /// </summary>
+        /// <param name="id">id заметки</param>
         public void Delete(Guid id)
         {
             using (var sqlConnection = new SqlConnection(_connectionString))
@@ -54,7 +62,11 @@ namespace Evernote.DataLayer.Sql
             }
         
         }
-
+        /// <summary>
+        /// Получить заметку по id
+        /// </summary>
+        /// <param name="noteid">id заметки</param>
+        /// <returns>заметка</returns>
         public Note Get(Guid noteid)
         {
             using (var sqlConnection = new SqlConnection(_connectionString))
@@ -87,7 +99,11 @@ namespace Evernote.DataLayer.Sql
             }
                 throw new ArgumentException($"Заметка с id {noteid} не найдена");
         }
-
+        /// <summary>
+        /// Обновление заметки
+        /// </summary>
+        /// <param name="note"> заметка</param>
+        /// <returns>обновлённая заметка</returns>
         public Note UpdateNote(Note note)
         {
             using (var sqlConnection = new SqlConnection(_connectionString))
@@ -109,7 +125,12 @@ namespace Evernote.DataLayer.Sql
                 }
             }
         }
-
+        /// <summary>
+        /// Копировать заметку пользователю с id newuserId заметку с id noteid
+        /// </summary>
+        /// <param name="noteid">id заметки</param>
+        /// <param name="newuserId">id пользователя</param>
+        /// <returns></returns>
         public Note CopyNoteToUser(Guid noteid, Guid newuserId)
         {
             Note note = Get(noteid);

@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel;
+using System.ComponentModel.DataAnnotations;
 using System.Data;
 using System.Drawing;
 using System.Linq;
@@ -21,24 +22,40 @@ namespace Evernote.WinForms.Forms
 
         private void btnRegister_Click(object sender, EventArgs e)
         {
-            progressBarIn.MarqueeAnimationSpeed = 50;
-            using (var form = new NewUserForm())
+            try
             {
-                if (form.ShowDialog() == DialogResult.OK)
+                using (var form = new NewUserForm())
                 {
-                    progressBarIn.MarqueeAnimationSpeed = 50;
-                    var user = _serviceClient.CreateUser(new User
+                    if (form.ShowDialog() == DialogResult.OK)
                     {
-                        FirstName = form.FirstName,
-                        LastName=form.LastName,
-                        Login=form.Login,
-                        Password=form.Password
+                        User newuser = new User
+                        {
+                            FirstName = form.FirstName.Trim(),
+                            LastName = form.LastName.Trim(),
+                            Login = form.Login.Trim(),
+                            Password = form.Password.Trim()
 
-                    });
-                    MessageBox.Show($"Пользователь успешно создан", "Пользователь", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                        };
+                        var results = new List<ValidationResult>();
+                        if (!Validator.TryValidateObject(newuser, new ValidationContext(newuser), results, true))
+                        {
+                            string errorlist = "";
+                            foreach (var error in results)
+                            {
+                                errorlist += error;
+                            }
+                            throw new Exception(errorlist);
+                        }
+
+                        var user = _serviceClient.CreateUser(newuser);
+                        MessageBox.Show($"Пользователь успешно создан", "Пользователь", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                    }
                 }
             }
-            progressBarIn.MarqueeAnimationSpeed = 0;
+            catch(Exception ex)
+            {
+                MessageBox.Show(ex.Message, "Ошибка", MessageBoxButtons.OK, MessageBoxIcon.Stop);
+            }
         }
     
         public User user { get; set; }
@@ -46,39 +63,40 @@ namespace Evernote.WinForms.Forms
         MainWindows MainForm;
         private void btnIn_Click(object sender, EventArgs e)
         {
-           
-            using (var form = new ExistUserForm())
+            try
             {
-                if (form.ShowDialog() == DialogResult.OK)
+                using (var form = new ExistUserForm())
                 {
-                    progressBarIn.MarqueeAnimationSpeed = 50;
-                    var user = _serviceClient.FindUser(form.Login,form.Password);
-                    if (user == null)
+                    if (form.ShowDialog() == DialogResult.OK)
                     {
-                        MessageBox.Show($"Пользователь с такими данными не существует", "Пользователь", MessageBoxButtons.OK, MessageBoxIcon.Stop);
-                        this.DialogResult= DialogResult.None;
-                        this.user = null;
-                    }
-                    else
-                    {
-                        progressBarIn.MarqueeAnimationSpeed = 50;
+
+                        var user = _serviceClient.FindUser(form.Login, form.Password);
                         this.DialogResult = DialogResult.OK;
                         this.user = user;
-                        MainForm = new MainWindows(user,_serviceClient);
+                        MainForm = new MainWindows(user, _serviceClient);
                         MainForm.Owner = this;
                         this.Visible = false;
                         MainForm.Show();
-                        
+
+
                     }
+
                 }
-
             }
-            progressBarIn.MarqueeAnimationSpeed = 0;
+            catch (Exception ex)
+            {
+                MessageBox.Show(ex.Message, "Ошибка",MessageBoxButtons.OK, MessageBoxIcon.Stop);
+                this.DialogResult = DialogResult.None;
+                this.user = null;
+            }
+           
+           
         }
-
         private void EntranceForm_Load(object sender, EventArgs e)
         {
             _serviceClient = new ServiceClient("http://localhost:55951/api/");
         }
+
+       
     }
 }

@@ -10,7 +10,7 @@ namespace Evernote.DataLayer.Sql.Tests
     [TestClass]
     public class SharedRepositoryTests
     {
-        private const string ConnectionString = @"Data Source=ANDREY-PK\SQLEXPRESS;Initial Catalog=EverNoteDb;Integrated Security=True;Connect Timeout=30;Encrypt=False;TrustServerCertificate=True;ApplicationIntent=ReadWrite;MultiSubnetFailover=False";
+        
         private readonly List<Guid> _tempUsers = new List<Guid>();
         [TestMethod]
         public void ShouldCreateShared()
@@ -23,7 +23,7 @@ namespace Evernote.DataLayer.Sql.Tests
                 Login = "login",
                 Password = "password"
             };
-            var userrepository = new UsersRepository(ConnectionString);
+            var userrepository = new UsersRepository();
             var result = userrepository.Create(user);
 
             _tempUsers.Add(user.Id);
@@ -32,7 +32,7 @@ namespace Evernote.DataLayer.Sql.Tests
 
 
 
-            var noterepository = new NotesRepository(new UsersRepository(ConnectionString), ConnectionString);
+            var noterepository = new NotesRepository(new UsersRepository());
             var note = new Note
             {
                 header = "test",
@@ -45,7 +45,7 @@ namespace Evernote.DataLayer.Sql.Tests
             var noteresult = noterepository.Create(note);
 
 
-            var sharedrepository = new SharedRepository(ConnectionString, new UsersRepository(ConnectionString));
+            var sharedrepository = new SharedRepository( new UsersRepository());
 
             var share = new Share()
             {
@@ -68,7 +68,7 @@ namespace Evernote.DataLayer.Sql.Tests
                 Login = "login",
                 Password = "password"
             };
-            var userrepository = new UsersRepository(ConnectionString);
+            var userrepository = new UsersRepository();
             var result = userrepository.Create(user);
 
             _tempUsers.Add(user.Id);
@@ -77,7 +77,7 @@ namespace Evernote.DataLayer.Sql.Tests
 
 
 
-            var noterepository = new NotesRepository(new UsersRepository(ConnectionString), ConnectionString);
+            var noterepository = new NotesRepository(new UsersRepository());
             var note = new Note
             {
                 header = "test",
@@ -90,7 +90,7 @@ namespace Evernote.DataLayer.Sql.Tests
             var noteresult = noterepository.Create(note);
 
 
-            var sharedrepository = new SharedRepository(ConnectionString, new UsersRepository(ConnectionString));
+            var sharedrepository = new SharedRepository( new UsersRepository());
 
             var share = new Share()
             {
@@ -109,7 +109,7 @@ namespace Evernote.DataLayer.Sql.Tests
         public void CleanData()
         {
             foreach (var id in _tempUsers)
-                new UsersRepository(ConnectionString).Delete(id);
+                new UsersRepository().Delete(id);
         }
     }
 }

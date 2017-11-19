@@ -5,17 +5,23 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Evernote.Model;
+using System.Configuration;
+
 namespace Evernote.DataLayer.Sql
 {
     public class UsersRepository : IUsersRepository
     {
         private readonly string _connectionString;
 
-        public UsersRepository(string connectionString)
+        public UsersRepository()
         {
-            _connectionString = connectionString;
+            _connectionString = ConfigurationManager.ConnectionStrings["DefaultConnection"].ConnectionString;
         }
-
+        /// <summary>
+        /// Создание  новго пользователя
+        /// </summary>
+        /// <param name="user">юзер</param>
+        /// <returns>созданный пользователь</returns>
         public User Create(User user)
         {
             using (var sqlConnection = new SqlConnection(_connectionString))
@@ -35,7 +41,12 @@ namespace Evernote.DataLayer.Sql
                 }
             }
         }
-
+        /// <summary>
+        /// Создание категории пользователя
+        /// </summary>
+        /// <param name="userId"> ид пользователя</param>
+        /// <param name="name">имя категории</param>
+        /// <returns></returns>
         public Category CreateCategory(Guid userId, string name)
         {
             using (var sqlConnection = new SqlConnection(_connectionString))
@@ -59,7 +70,10 @@ namespace Evernote.DataLayer.Sql
                 }
             }
         }
-
+        /// <summary>
+        /// удаление пользователя по id
+        /// </summary>
+        /// <param name="id">id пользователя</param>
         public void Delete(Guid id)
         {
             using (var sqlConnection = new SqlConnection(_connectionString))
@@ -73,7 +87,11 @@ namespace Evernote.DataLayer.Sql
                 }
             }
         }
-
+        /// <summary>
+        /// Получение пользователя по id
+        /// </summary>
+        /// <param name="id"> id пользователя</param>
+        /// <returns> созданный пользователь</returns>
         public User Get(Guid id)
         {
             using (var sqlConnection = new SqlConnection(_connectionString))
@@ -87,7 +105,7 @@ namespace Evernote.DataLayer.Sql
                     using (var reader = command.ExecuteReader())
                     {
                         if (!reader.Read())
-                            throw new ArgumentException($"Пользователь с id {id} не найден");
+                            throw new InvalidOperationException("Пользователь не найден!");
 
                         var user = new User
                         {
@@ -103,7 +121,12 @@ namespace Evernote.DataLayer.Sql
                 }
             }
         }
-
+        /// <summary>
+        /// Получение пользователя по логину паролю
+        /// </summary>
+        /// <param name="login">логин</param>
+        /// <param name="password">пароль</param>
+        /// <returns>найднный пользователь</returns>
         public User Get(string login, string password)
         {
            
@@ -117,10 +140,11 @@ namespace Evernote.DataLayer.Sql
                         command.Parameters.AddWithValue("@password", password);
                         using (var reader = command.ExecuteReader())
                         {
-                            if (!reader.Read())
-                                return null;
+                        if (!reader.Read())
+                            throw new InvalidOperationException("Пользователь не найден!");
+                      
 
-                            var user = new User
+                        var user = new User
                             {
                                 Id = reader.GetGuid(reader.GetOrdinal("id")),
                                 FirstName = reader.GetString(reader.GetOrdinal("firstName")),
@@ -136,7 +160,11 @@ namespace Evernote.DataLayer.Sql
            
 
         }
-
+        /// <summary>
+        /// Получить всех пользователей,кроме пользователя с userid
+        /// </summary>
+        /// <param name="userId">id исключённого пользователя</param>
+        /// <returns> список пользователей</returns>
         public IEnumerable<User> GetAllUserExpectMe(Guid userId)
         {
             using (var sqlConnection = new SqlConnection(_connectionString))
@@ -166,7 +194,11 @@ namespace Evernote.DataLayer.Sql
                 }
             }
         }
-    
+        /// <summary>
+        /// Получить заметки пользователя
+        /// </summary>
+        /// <param name="userId"> ид пользователя</param>
+        /// <returns>заметки</returns>
         public IEnumerable<Note> GetUserNotes(Guid userId)
         {
             using (var sqlConnection = new SqlConnection(_connectionString))
@@ -197,7 +229,11 @@ namespace Evernote.DataLayer.Sql
             }
 
         }
-
+        /// <summary>
+        /// Получить категории пользователя
+        /// </summary>
+        /// <param name="userId"> id пользователя</param>
+        /// <returns> список категорий</returns>
         public IEnumerable<Category> GetUserCategories(Guid userId)
         {
             using (var sqlConnection = new SqlConnection(_connectionString))
@@ -222,7 +258,11 @@ namespace Evernote.DataLayer.Sql
                 }
             }
         }
-
+        /// <summary>
+        /// Обновление пользователя 
+        /// </summary>
+        /// <param name="user"> пользователь</param>
+        /// <returns>обновленный пользователь</returns>
         public User Update(User user)
         {
             using (var sqlConnection = new SqlConnection(_connectionString))

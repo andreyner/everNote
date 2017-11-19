@@ -35,15 +35,19 @@
             System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle5 = new System.Windows.Forms.DataGridViewCellStyle();
             System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle2 = new System.Windows.Forms.DataGridViewCellStyle();
             this.dataGshares = new System.Windows.Forms.DataGridView();
+            this.contextMenuDGShare = new System.Windows.Forms.ContextMenuStrip(this.components);
+            this.btnupdateDGShare = new System.Windows.Forms.ToolStripMenuItem();
+            this.noteBindingSource = new System.Windows.Forms.BindingSource(this.components);
             this.Id = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.User = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.name = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.textDataGridViewTextBoxColumn = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.createdDate = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.changedDate = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.categoriesDataGridViewTextBoxColumn = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.sharedDataGridViewTextBoxColumn = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.noteBindingSource = new System.Windows.Forms.BindingSource(this.components);
             ((System.ComponentModel.ISupportInitialize)(this.dataGshares)).BeginInit();
+            this.contextMenuDGShare.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.noteBindingSource)).BeginInit();
             this.SuspendLayout();
             // 
@@ -66,12 +70,14 @@
             this.dataGshares.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
             this.dataGshares.Columns.AddRange(new System.Windows.Forms.DataGridViewColumn[] {
             this.Id,
+            this.User,
             this.name,
             this.textDataGridViewTextBoxColumn,
             this.createdDate,
             this.changedDate,
             this.categoriesDataGridViewTextBoxColumn,
             this.sharedDataGridViewTextBoxColumn});
+            this.dataGshares.ContextMenuStrip = this.contextMenuDGShare;
             this.dataGshares.DataSource = this.noteBindingSource;
             dataGridViewCellStyle3.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleLeft;
             dataGridViewCellStyle3.BackColor = System.Drawing.SystemColors.Window;
@@ -103,6 +109,24 @@
             this.dataGshares.TabIndex = 0;
             this.dataGshares.CellDoubleClick += new System.Windows.Forms.DataGridViewCellEventHandler(this.dataGshares_CellDoubleClick);
             // 
+            // contextMenuDGShare
+            // 
+            this.contextMenuDGShare.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.btnupdateDGShare});
+            this.contextMenuDGShare.Name = "contextMenuDGShare";
+            this.contextMenuDGShare.Size = new System.Drawing.Size(129, 26);
+            // 
+            // btnupdateDGShare
+            // 
+            this.btnupdateDGShare.Name = "btnupdateDGShare";
+            this.btnupdateDGShare.Size = new System.Drawing.Size(128, 22);
+            this.btnupdateDGShare.Text = "Обновить";
+            this.btnupdateDGShare.Click += new System.EventHandler(this.btnupdateDGShare_Click);
+            // 
+            // noteBindingSource
+            // 
+            this.noteBindingSource.DataSource = typeof(Evernote.Note);
+            // 
             // Id
             // 
             this.Id.DataPropertyName = "Id";
@@ -110,6 +134,14 @@
             this.Id.Name = "Id";
             this.Id.ReadOnly = true;
             this.Id.Visible = false;
+            // 
+            // User
+            // 
+            this.User.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.Fill;
+            this.User.DataPropertyName = "Owner";
+            this.User.HeaderText = "Owner";
+            this.User.Name = "User";
+            this.User.ReadOnly = true;
             // 
             // name
             // 
@@ -161,10 +193,6 @@
             this.sharedDataGridViewTextBoxColumn.ReadOnly = true;
             this.sharedDataGridViewTextBoxColumn.Visible = false;
             // 
-            // noteBindingSource
-            // 
-            this.noteBindingSource.DataSource = typeof(Evernote.Note);
-            // 
             // SharesMeForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -176,6 +204,7 @@
             this.Name = "SharesMeForm";
             this.Text = "Заметки мне";
             ((System.ComponentModel.ISupportInitialize)(this.dataGshares)).EndInit();
+            this.contextMenuDGShare.ResumeLayout(false);
             ((System.ComponentModel.ISupportInitialize)(this.noteBindingSource)).EndInit();
             this.ResumeLayout(false);
 
@@ -186,7 +215,10 @@
         private System.Windows.Forms.DataGridView dataGshares;
         private System.Windows.Forms.BindingSource noteBindingSource;
         private System.Windows.Forms.DataGridViewTextBoxColumn Owner;
+        private System.Windows.Forms.ContextMenuStrip contextMenuDGShare;
+        private System.Windows.Forms.ToolStripMenuItem btnupdateDGShare;
         private System.Windows.Forms.DataGridViewTextBoxColumn Id;
+        private System.Windows.Forms.DataGridViewTextBoxColumn User;
         private System.Windows.Forms.DataGridViewTextBoxColumn name;
         private System.Windows.Forms.DataGridViewTextBoxColumn textDataGridViewTextBoxColumn;
         private System.Windows.Forms.DataGridViewTextBoxColumn createdDate;

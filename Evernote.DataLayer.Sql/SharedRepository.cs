@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Configuration;
 using System.Data.SqlClient;
 using System.Linq;
 using System.Text;
@@ -11,11 +12,16 @@ namespace Evernote.DataLayer.Sql
     {
         private readonly string _connectionString;
         private readonly IUsersRepository _usersRepository;
-        public SharedRepository(string _connectionString, IUsersRepository _usersRepository)
+        public SharedRepository( IUsersRepository _usersRepository)
         {
-            this._connectionString = _connectionString;
+            this._connectionString = ConfigurationManager.ConnectionStrings["DefaultConnection"].ConnectionString;
             this._usersRepository = _usersRepository;
         }
+        /// <summary>
+        /// Создать шару
+        /// </summary>
+        /// <param name="share">шара</param>
+        /// <returns>созданная шара</returns>
         public Share ShareCreate(Share share)
         {
             using (var sqlConnection = new SqlConnection(_connectionString))
@@ -32,6 +38,11 @@ namespace Evernote.DataLayer.Sql
                 }
             }
         }
+        /// <summary>
+        /// Получить шары пользователя по его id
+        /// </summary>
+        /// <param name="userid">id пользователя</param>
+        /// <returns> заметки из шар</returns>
         public IEnumerable<Note> GetShares(Guid userid)
         {
             using (var sqlConnection = new SqlConnection(_connectionString))
@@ -48,13 +59,17 @@ namespace Evernote.DataLayer.Sql
                         while (reader.Read())
                         {
 
-                            yield return new NotesRepository(_usersRepository, _connectionString).Get(reader.GetGuid(reader.GetOrdinal("Noteid")));
+                            yield return new NotesRepository(_usersRepository).Get(reader.GetGuid(reader.GetOrdinal("Noteid")));
 
                         }
                     }
                 }
             }
         }
+        /// <summary>
+        /// Удаление шары
+        /// </summary>
+        /// <param name="share"></param>
         public void ShareDelete(Share share)
         {
             using (var sqlConnection = new SqlConnection(_connectionString))

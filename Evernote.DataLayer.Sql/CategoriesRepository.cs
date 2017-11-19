@@ -1,6 +1,7 @@
 ﻿using Evernote.Model;
 using System;
 using System.Collections.Generic;
+using System.Configuration;
 using System.Data.SqlClient;
 using System.Linq;
 using System.Text;
@@ -14,12 +15,16 @@ namespace Evernote.DataLayer.Sql
         private readonly string _connectionString;
         private readonly INotesRepository _notesRepository;
 
-        public CategoriesRepository(string connectionString,INotesRepository _notesRepository)
+        public CategoriesRepository(INotesRepository _notesRepository)
         {
-            this. _connectionString = connectionString;
+            this. _connectionString = ConfigurationManager.ConnectionStrings["DefaultConnection"].ConnectionString;
             this._notesRepository = _notesRepository;
         }
-
+        /// <summary>
+        /// Добавить заметку в категорию
+        /// </summary>
+        /// <param name="categoryId">id категории</param>
+        /// <param name="noteId"> id замекти</param>
         public void AddNoteintoCategory( Guid categoryId,Guid noteId)
         {
             using (var sqlConnection = new SqlConnection(_connectionString))
@@ -35,7 +40,10 @@ namespace Evernote.DataLayer.Sql
                 }
             }
         }
-
+        /// <summary>
+        /// удаление категории по id
+        /// </summary>
+        /// <param name="categoryId"> id категории</param>
         public void Delete(Guid categoryId)
         {
 
@@ -50,7 +58,11 @@ namespace Evernote.DataLayer.Sql
                 }
             }
         }
-
+        /// <summary>
+        /// Удаление заметки из категории
+        /// </summary>
+        /// <param name="categoryId">ид категории</param>
+        /// <param name="noteId">ид заметки</param>
         public void DellNoteintoCategory(Guid categoryId, Guid noteId)
         {
             using (var sqlConnection = new SqlConnection(_connectionString))
@@ -65,7 +77,11 @@ namespace Evernote.DataLayer.Sql
                 }
             }
         }
-
+        /// <summary>
+        /// Получить категории по id
+        /// </summary>
+        /// <param name="categoryId">id категрии</param>
+        /// <returns> категория</returns>
         public Category GetCategory(Guid categoryId)
         {
 
@@ -81,8 +97,7 @@ namespace Evernote.DataLayer.Sql
                     {
                         while (reader.Read())
                         {
-                            ////if (!reader.Read())
-                            ////    throw new ArgumentException($"Категория с id {categoryId} не найдена");
+
                             return new Category
                             {
 
@@ -96,7 +111,11 @@ namespace Evernote.DataLayer.Sql
             }
             throw new ArgumentException($"Категория с id {categoryId} не найдена");
         }
-
+        /// <summary>
+        /// Получить категории заметки
+        /// </summary>
+        /// <param name="noteId"> id заметки</param>
+        /// <returns> список категорий</returns>
         public IEnumerable<Category> GetCategoriesofNote(Guid noteId)
         {
             using (var sqlConnection = new SqlConnection(_connectionString))
@@ -123,7 +142,11 @@ namespace Evernote.DataLayer.Sql
                 }
             }
         }
- 
+        /// <summary>
+        /// Получить замекти категории
+        /// </summary>
+        /// <param name="categoryId"> id категории</param>
+        /// <returns>заметки</returns>
         public IEnumerable<Note> GetNotesofCategory(Guid categoryId)
         {
             using (var sqlConnection = new SqlConnection(_connectionString))
@@ -147,8 +170,13 @@ namespace Evernote.DataLayer.Sql
                 }
             }
         }
-
-        public IEnumerable<Category> GetfreeCategoriesofNote(Guid noteId)
+        /// <summary>
+        /// Получить категории пользователя где нет заметки
+        /// </summary>
+        /// <param name="noteId"> id заметки</param>
+        /// <param name="userid">id пользователя</param>
+        /// <returns> список категорий</returns>
+        public IEnumerable<Category> GetfreeCategoriesofNote(Guid noteId,Guid userid)
         {
             using (var sqlConnection = new SqlConnection(_connectionString))
             {
@@ -159,13 +187,9 @@ namespace Evernote.DataLayer.Sql
                         "from Mediator A " +
                         "RIGHT JOIN Category B " +
                         "ON A.[categoryid]=B.[id] AND A.[noteid]=@noteId " +
-                        "where A.[categoryid] IS NULL";
-                    //command.CommandText = @"select Mediator.categoryid " +
-                    //    "from Mediator " +
-                    //    "RIGHT JOIN Category " +
-                    //    "ON Mediator.categoryid=Category.id AND Mediator.noteid=@noteId " +
-                    //    "where Mediator.categoryid IS NULL";
+                        "where A.[categoryid] IS NULL AND B.[Userid]=@userid";
                     command.Parameters.AddWithValue("@noteId", noteId);
+                    command.Parameters.AddWithValue("@userid", userid);
 
                     using (var reader = command.ExecuteReader())
                     {
@@ -188,7 +212,11 @@ namespace Evernote.DataLayer.Sql
             }
 
         }
-
+        /// <summary>
+        /// обновить категорию
+        /// </summary>
+        /// <param name="category"> категория</param>
+        /// <returns>обновлённая категория</returns>
         public Category Update( Category category)
         {
             using (var sqlConnection = new SqlConnection(_connectionString))

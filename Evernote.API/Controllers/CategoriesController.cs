@@ -4,6 +4,8 @@ using Evernote.DataLayer.Sql;
 using Evernote.Model;
 using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
+using System.Configuration;
 using System.Linq;
 using System.Net;
 using System.Net.Http;
@@ -15,12 +17,12 @@ namespace Evernote.API.Controllers
     public class CategoriesController : ApiController
     {
 
-        private const string ConnectionString = @"Data Source=ANDREY-PK\SQLEXPRESS;Initial Catalog=EverNoteDb;Integrated Security=True;Connect Timeout=30;Encrypt=False;TrustServerCertificate=True;ApplicationIntent=ReadWrite;MultiSubnetFailover=False";
         private readonly ICategoriesRepository _categoriesRepository;
 
         public CategoriesController()
         {
-            _categoriesRepository = new CategoriesRepository(ConnectionString,new NotesRepository(new UsersRepository(ConnectionString),ConnectionString));
+            _categoriesRepository = new CategoriesRepository(new NotesRepository(new UsersRepository()));
+            
 
         }
 
@@ -42,11 +44,11 @@ namespace Evernote.API.Controllers
 
         [HttpPost]
         [Route("api/categories/{id}/add")]
-        public void AddNoteintoCategory(Guid id, [FromBody] Note note)
+        public Note AddNoteintoCategory(Guid id, [FromBody] Note note)
         {
             Logger.Log.Instance.Info("Добавление заметкм с id: {0} в категорию c id: {1}", note.Id, id);
-           // string errors = ModelValidator.Validate(ModelState);
             _categoriesRepository.AddNoteintoCategory(id, note.Id);
+            return note;
         }
 
         [HttpGet]
@@ -66,11 +68,11 @@ namespace Evernote.API.Controllers
         }
 
         [HttpGet]
-        [Route("api/categories/free/note/{id}")]
-        public IEnumerable<Category> GetfreeCategoriesofNote(Guid id)
+        [Route("api/categories/note/{noteid}/user/{userid}")]
+        public IEnumerable<Category> GetfreeCategoriesofNote(Guid noteid, Guid userid)
         {
-            Logger.Log.Instance.Info("Получить категории не принадлжежащие заметке с id: {0}", id);
-            return _categoriesRepository.GetfreeCategoriesofNote(id);
+            Logger.Log.Instance.Info("Получить категорий пользователя с id: {0} не принадлжежащие заметке с id: {1}", userid, noteid);
+            return _categoriesRepository.GetfreeCategoriesofNote(noteid, userid);
         }
 
         [HttpPut]

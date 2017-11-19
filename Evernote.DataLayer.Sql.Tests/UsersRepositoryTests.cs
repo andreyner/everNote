@@ -24,7 +24,7 @@ namespace Evernote.DataLayer.Sql.Tests
             };
 
             //act
-            var repository = new UsersRepository(ConnectionString);
+            var repository = new UsersRepository();
             var result = repository.Create(user);
 
             _tempUsers.Add(user.Id);
@@ -50,9 +50,9 @@ namespace Evernote.DataLayer.Sql.Tests
 
             //act
           
-            var usersRepository = new UsersRepository(ConnectionString);
-            var notesRepository = new NotesRepository(usersRepository,ConnectionString);
-            var categoriesRepository = new CategoriesRepository(ConnectionString, notesRepository);
+            var usersRepository = new UsersRepository();
+            var notesRepository = new NotesRepository(usersRepository);
+            var categoriesRepository = new CategoriesRepository( notesRepository);
             user = usersRepository.Create(user);
 
             _tempUsers.Add(user.Id);
@@ -68,7 +68,7 @@ namespace Evernote.DataLayer.Sql.Tests
         public void CleanData()
         {
             foreach (var id in _tempUsers)
-                new UsersRepository(ConnectionString).Delete(id);
+                new UsersRepository().Delete(id);
         }
     }
 }
