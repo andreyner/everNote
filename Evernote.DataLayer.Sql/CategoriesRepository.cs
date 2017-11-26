@@ -15,10 +15,10 @@ namespace Evernote.DataLayer.Sql
         private readonly string _connectionString;
         private readonly INotesRepository _notesRepository;
 
-        public CategoriesRepository(INotesRepository _notesRepository)
+        public CategoriesRepository()
         {
             this. _connectionString = ConfigurationManager.ConnectionStrings["DefaultConnection"].ConnectionString;
-            this._notesRepository = _notesRepository;
+            this._notesRepository=new NotesRepository();
         }
         /// <summary>
         /// Добавить заметку в категорию

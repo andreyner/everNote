@@ -12,10 +12,10 @@ namespace Evernote.DataLayer.Sql
     {
         private readonly string _connectionString;
         private readonly IUsersRepository _usersRepository;
-        public SharedRepository( IUsersRepository _usersRepository)
+        public SharedRepository()
         {
             this._connectionString = ConfigurationManager.ConnectionStrings["DefaultConnection"].ConnectionString;
-            this._usersRepository = _usersRepository;
+            this._usersRepository = new UsersRepository();
         }
         /// <summary>
         /// Создать шару
@@ -39,11 +39,11 @@ namespace Evernote.DataLayer.Sql
             }
         }
         /// <summary>
-        /// Получить шары пользователя по его id
+        ///  Получить шары пришедшие пользователю
         /// </summary>
         /// <param name="userid">id пользователя</param>
         /// <returns> заметки из шар</returns>
-        public IEnumerable<Note> GetShares(Guid userid)
+        public IEnumerable<Note> GetSharestoMe(Guid userid)
         {
             using (var sqlConnection = new SqlConnection(_connectionString))
             {
@@ -59,7 +59,7 @@ namespace Evernote.DataLayer.Sql
                         while (reader.Read())
                         {
 
-                            yield return new NotesRepository(_usersRepository).Get(reader.GetGuid(reader.GetOrdinal("Noteid")));
+                            yield return new NotesRepository().Get(reader.GetGuid(reader.GetOrdinal("Noteid")));
 
                         }
                     }
@@ -81,6 +81,39 @@ namespace Evernote.DataLayer.Sql
                     command.Parameters.AddWithValue("@Noteid", share.SharedNoteId);
                     command.Parameters.AddWithValue("@Userid", share.DestinationUserId);
                     command.ExecuteNonQuery();
+                }
+            }
+        }
+        /// <summary>
+        /// Получить заметки отправленные пользователем
+        /// </summary>
+        /// <param name="userid"> id пользователя</param>
+        /// <returns> заметки</returns>
+        public IEnumerable<Note> GetSharesfromMe(Guid userid)
+        {
+            using (var sqlConnection = new SqlConnection(_connectionString))
+            {
+                sqlConnection.Open();
+                using (var command = sqlConnection.CreateCommand())
+                {
+                    command.CommandText = "select A.Noteid, A.Userid " +
+                        " from Shares A " +
+                        " INNER JOIN Note B " +
+                        " ON A.Noteid=B.id " +
+                        " where B.userid=@id";
+                    command.Parameters.AddWithValue("@id", userid);
+
+                    using (var reader = command.ExecuteReader())
+                    {
+                        while (reader.Read())
+                        {
+                            Note note = new NotesRepository().Get(reader.GetGuid(reader.GetOrdinal("Noteid")));
+                            note.Owner = _usersRepository.Get((reader.GetGuid(reader.GetOrdinal("Userid"))));
+                            yield return note;
+                                
+
+                        }
+                    }
                 }
             }
         }

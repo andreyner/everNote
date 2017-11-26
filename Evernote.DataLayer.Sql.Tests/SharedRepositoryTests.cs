@@ -32,7 +32,7 @@ namespace Evernote.DataLayer.Sql.Tests
 
 
 
-            var noterepository = new NotesRepository(new UsersRepository());
+            var noterepository = new NotesRepository();
             var note = new Note
             {
                 header = "test",
@@ -45,7 +45,7 @@ namespace Evernote.DataLayer.Sql.Tests
             var noteresult = noterepository.Create(note);
 
 
-            var sharedrepository = new SharedRepository( new UsersRepository());
+            var sharedrepository = new SharedRepository();
 
             var share = new Share()
             {
@@ -77,7 +77,7 @@ namespace Evernote.DataLayer.Sql.Tests
 
 
 
-            var noterepository = new NotesRepository(new UsersRepository());
+            var noterepository = new NotesRepository();
             var note = new Note
             {
                 header = "test",
@@ -90,7 +90,7 @@ namespace Evernote.DataLayer.Sql.Tests
             var noteresult = noterepository.Create(note);
 
 
-            var sharedrepository = new SharedRepository( new UsersRepository());
+            var sharedrepository = new SharedRepository();
 
             var share = new Share()
             {
@@ -98,7 +98,7 @@ namespace Evernote.DataLayer.Sql.Tests
                 SharedNoteId = noteresult.Id
             };
             sharedrepository.ShareCreate(share);
-            var shareresult = sharedrepository.GetShares(userFromDb.Id);
+            var shareresult = sharedrepository.GetSharestoMe(userFromDb.Id);
 
             Assert.AreEqual(shareresult.Single().Id, noteresult.Id);
 

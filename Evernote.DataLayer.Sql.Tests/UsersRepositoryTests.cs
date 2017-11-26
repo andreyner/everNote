@@ -51,8 +51,8 @@ namespace Evernote.DataLayer.Sql.Tests
             //act
           
             var usersRepository = new UsersRepository();
-            var notesRepository = new NotesRepository(usersRepository);
-            var categoriesRepository = new CategoriesRepository( notesRepository);
+            var notesRepository = new NotesRepository();
+            var categoriesRepository = new CategoriesRepository();
             user = usersRepository.Create(user);
 
             _tempUsers.Add(user.Id);

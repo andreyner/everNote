@@ -149,7 +149,7 @@ namespace Evernote.WinForms
         }
         public IEnumerable<Note> GetShareMe(Guid userid)
         {
-            var notes = _client.GetAsync($"shares/user/{userid}").Result;
+            var notes = _client.GetAsync($"shares/touser/{userid}").Result;
             switch (notes.StatusCode)
             {
                 case HttpStatusCode.OK: return notes.Content.ReadAsAsync<IEnumerable<Note>>().Result;
@@ -207,9 +207,9 @@ namespace Evernote.WinForms
                 default: throw new Exception("Не удалось получить свободные  категории  для заметки");
             }
         }
-        public IEnumerable<Note> GetSharesofUser(Guid userid)
+        public IEnumerable<Note> GetSharestoMe(Guid userid)
         {
-            var notes = _client.GetAsync($"shares/user/{userid}").Result;
+            var notes = _client.GetAsync($"shares/touser/{userid}").Result;
             switch (notes.StatusCode)
             {
                 case HttpStatusCode.OK: return notes.Content.ReadAsAsync<IEnumerable<Note>>().Result;
@@ -242,6 +242,25 @@ namespace Evernote.WinForms
             {
                 case HttpStatusCode.OK: return userres.Content.ReadAsAsync<User>().Result;
                 default: throw new Exception("Не удалось обновить информацию!");
+            }
+        }
+        public void dellNoteInCategory(Guid noteid,Guid categoryid)
+        {
+            var res = _client.DeleteAsync($"categories/{categoryid}/note/{noteid}").Result;
+            switch (res.StatusCode)
+            {
+                case HttpStatusCode.OK: return;
+                case HttpStatusCode.NoContent: return;
+                default: throw new Exception("Не удалось удалить заметку!");
+            }
+        }
+        public IEnumerable<Note> GetSharesfromMe(Guid userid)
+        {
+            var notes = _client.GetAsync($"shares/fromuser/{userid}").Result;
+            switch (notes.StatusCode)
+            {
+                case HttpStatusCode.OK: return notes.Content.ReadAsAsync<IEnumerable<Note>>().Result;
+                default: throw new Exception("Не удалось получить заметки от других пользователей");
             }
         }
 

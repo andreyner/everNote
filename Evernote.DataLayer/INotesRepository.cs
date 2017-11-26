@@ -39,5 +39,7 @@ namespace Evernote.DataLayer
         /// <returns>Объект заметки</returns>
         Note Get(Guid noteid);
 
+
+
     }
 }

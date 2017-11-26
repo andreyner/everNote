@@ -15,11 +15,17 @@ namespace Evernote.DataLayer
         /// <returns>Созданная Шара</returns>
         Share ShareCreate(Share share);
         /// <summary>
-        /// Получить шары пользователя
+        /// Получить шары пришедшие пользователю
         /// </summary>
         /// <param name="userid"> ид пользователя</param>
         /// <returns>Все шары</returns>
-        IEnumerable<Note> GetShares(Guid userid);
+        IEnumerable<Note> GetSharestoMe(Guid userid);
+        /// <summary>
+        /// Получить шары,отправленнные пользователем
+        /// </summary>
+        /// <param name="userid">id пользователя</param>
+        /// <returns>заметки</returns>
+        IEnumerable<Note> GetSharesfromMe(Guid userid);     
         /// <summary>
         /// Удалить шару
         /// </summary>

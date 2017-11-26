@@ -69,6 +69,8 @@
             this.btndellCategory = new System.Windows.Forms.ToolStripMenuItem();
             this.brnRenameCategory = new System.Windows.Forms.ToolStripMenuItem();
             this.categoryBindingSource = new System.Windows.Forms.BindingSource(this.components);
+            this.btnaddNoteContextMenu = new System.Windows.Forms.ToolStripMenuItem();
+            this.btndellfromcategory = new System.Windows.Forms.ToolStripMenuItem();
             this.tableLayoutPanel1.SuspendLayout();
             this.toolStrip1.SuspendLayout();
             this.tableLayoutPanel2.SuspendLayout();
@@ -214,7 +216,7 @@
             // 
             this.groupBox1.Controls.Add(this.dataGNotes);
             this.groupBox1.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.groupBox1.Font = new System.Drawing.Font("Microsoft Sans Serif", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
+            this.groupBox1.Font = new System.Drawing.Font("Microsoft Sans Serif", 9.75F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
             this.groupBox1.Location = new System.Drawing.Point(211, 3);
             this.groupBox1.Name = "groupBox1";
             this.groupBox1.Size = new System.Drawing.Size(501, 438);
@@ -278,9 +280,10 @@
             this.btnchangenote,
             this.btndellNote,
             this.btnaddintoCategory,
-            this.btnShare});
+            this.btnShare,
+            this.btndellfromcategory});
             this.contextMenuNote.Name = "contextMenuNote";
-            this.contextMenuNote.Size = new System.Drawing.Size(198, 136);
+            this.contextMenuNote.Size = new System.Drawing.Size(198, 158);
             // 
             // btnShowallNote
             // 
@@ -379,9 +382,10 @@
             // contextMenuDataGridNotes
             // 
             this.contextMenuDataGridNotes.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
-            this.btnShowAllNotes});
+            this.btnShowAllNotes,
+            this.btnaddNoteContextMenu});
             this.contextMenuDataGridNotes.Name = "btnShowAllNotes";
-            this.contextMenuDataGridNotes.Size = new System.Drawing.Size(193, 26);
+            this.contextMenuDataGridNotes.Size = new System.Drawing.Size(193, 48);
             // 
             // btnShowAllNotes
             // 
@@ -398,7 +402,7 @@
             // 
             this.groupBox2.Controls.Add(this.dataGcategories);
             this.groupBox2.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.groupBox2.Font = new System.Drawing.Font("Microsoft Sans Serif", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
+            this.groupBox2.Font = new System.Drawing.Font("Microsoft Sans Serif", 9.75F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
             this.groupBox2.Location = new System.Drawing.Point(3, 3);
             this.groupBox2.Name = "groupBox2";
             this.groupBox2.Size = new System.Drawing.Size(202, 438);
@@ -432,6 +436,7 @@
             this.dataGcategories.Size = new System.Drawing.Size(196, 417);
             this.dataGcategories.TabIndex = 0;
             this.dataGcategories.CellMouseClick += new System.Windows.Forms.DataGridViewCellMouseEventHandler(this.dataGcategories_CellMouseClick);
+            this.dataGcategories.SelectionChanged += new System.EventHandler(this.dataGcategories_SelectionChanged);
             // 
             // Id
             // 
@@ -483,6 +488,20 @@
             // categoryBindingSource
             // 
             this.categoryBindingSource.DataSource = typeof(Evernote.Model.Category);
+            // 
+            // btnaddNoteContextMenu
+            // 
+            this.btnaddNoteContextMenu.Name = "btnaddNoteContextMenu";
+            this.btnaddNoteContextMenu.Size = new System.Drawing.Size(192, 22);
+            this.btnaddNoteContextMenu.Text = "Добавить";
+            this.btnaddNoteContextMenu.Click += new System.EventHandler(this.btnaddNoteContextMenu_Click);
+            // 
+            // btndellfromcategory
+            // 
+            this.btndellfromcategory.Name = "btndellfromcategory";
+            this.btndellfromcategory.Size = new System.Drawing.Size(197, 22);
+            this.btndellfromcategory.Text = "Убрать из категории";
+            this.btndellfromcategory.Click += new System.EventHandler(this.btndellfromcategory_Click);
             // 
             // MainWindows
             // 
@@ -553,6 +572,8 @@
         private System.Windows.Forms.DataGridViewTextBoxColumn categoriesDataGridViewTextBoxColumn;
         private System.Windows.Forms.DataGridViewTextBoxColumn sharedDataGridViewTextBoxColumn;
         private System.Windows.Forms.ToolStripMenuItem brnRenameCategory;
+        private System.Windows.Forms.ToolStripMenuItem btnaddNoteContextMenu;
+        private System.Windows.Forms.ToolStripMenuItem btndellfromcategory;
     }
 }
 

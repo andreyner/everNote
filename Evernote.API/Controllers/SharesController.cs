@@ -9,7 +9,10 @@ using System.Net.Http;
 using System.Web.Http;
 
 namespace Evernote.API.Controllers
-{
+{    
+    /// <summary>
+     /// Контроллер шар
+     /// </summary>
     [FilterExceptions]
     public class SharesController : ApiController
     {
@@ -19,9 +22,13 @@ namespace Evernote.API.Controllers
 
         public SharesController()
         {
-            _sharesRepository = new SharedRepository(new UsersRepository());
+            _sharesRepository = new SharedRepository();
         }
-
+        /// <summary>
+        /// Создать шару
+        /// </summary>
+        /// <param name="share"> шара</param>
+        /// <returns>шара</returns>
         [HttpPost]
         [Route("api/shares")]
         public Share CreatShare([FromBody] Share share)
@@ -35,15 +42,34 @@ namespace Evernote.API.Controllers
             }
             return _sharesRepository.ShareCreate(share);
         }
-
+        /// <summary>
+        /// Получить шары (заметки) пользователю
+        /// </summary>
+        /// <param name="id"> id пользователя</param>
+        /// <returns> заметки</returns>
         [HttpGet]
-        [Route("api/shares/user/{id}")]
-        public IEnumerable<Note> GetSharesofUser(Guid id)
+        [Route("api/shares/touser/{id}")]
+        public IEnumerable<Note> GetSharestoMe(Guid id)
         {
-            Logger.Log.Instance.Info("Получение шары пользователя с id: {0}", id);
-            return _sharesRepository.GetShares(id);
+            Logger.Log.Instance.Info("Получение шары для пользователя с id: {0}", id);
+            return _sharesRepository.GetSharestoMe(id);
         }
-
+        /// <summary>
+        /// Получить шары(заметки) от меня
+        /// </summary>
+        /// <param name="id"> id пользователя</param>
+        /// <returns>заметки</returns>
+        [HttpGet]
+        [Route("api/shares/fromuser/{id}")]
+        public IEnumerable<Note> GetSharesfromMe(Guid id)
+        {
+            Logger.Log.Instance.Info("Получение шары  от пользователя с id: {0}", id);
+            return _sharesRepository.GetSharesfromMe(id);
+        }
+        /// <summary>
+        /// Удаление шары
+        /// </summary>
+        /// <param name="share"> шара</param>
         [HttpDelete]
         [Route("api/shares")]
         public void Sharesdelete([FromBody]Share share)

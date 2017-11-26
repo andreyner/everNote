@@ -22,17 +22,17 @@ namespace Evernote.DataLayer.Sql.Tests
                 Login = "login",
                 Password = "password"
             };
-            var userrepository = new UsersRepository(ConnectionString, new CategoriesRepository(ConnectionString));
+            var userrepository = new UsersRepository();
             var result = userrepository.Create(user);
 
             _tempUsers.Add(user.Id);
 
             var userFromDb = userrepository.Get(result.Id);
-            var categoriesRepository = new CategoriesRepository(ConnectionString);
+            var categoriesRepository = new CategoriesRepository();
             string categoryname = "testcategory";
             var creatcategory = userrepository.CreateCategory(userFromDb.Id, categoryname);
 
-            var noterepository = new NotesRepository(new UsersRepository(ConnectionString, new CategoriesRepository(ConnectionString)), ConnectionString);
+            var noterepository = new NotesRepository();
             var note = new Note
             {
                 header = "test",
@@ -46,7 +46,7 @@ namespace Evernote.DataLayer.Sql.Tests
 
             categoriesRepository.AddNoteintoCategory(noteresult.Id, creatcategory.Id);
 
-            var resnotes=noterepository.GetNotesofCategory(creatcategory.Id);
+            var resnotes= categoriesRepository.GetNotesofCategory(creatcategory.Id);
 
             Assert.AreEqual(note.text,resnotes.Single().text);
         }
@@ -61,13 +61,13 @@ namespace Evernote.DataLayer.Sql.Tests
                 Login = "login",
                 Password = "password"
             };
-            var userrepository = new UsersRepository(ConnectionString, new CategoriesRepository(ConnectionString));
+            var userrepository = new UsersRepository();
             var result = userrepository.Create(user);
 
             _tempUsers.Add(user.Id);
 
             var userFromDb = userrepository.Get(result.Id);
-            var categoriesRepository = new CategoriesRepository(ConnectionString);
+            var categoriesRepository = new CategoriesRepository();
             string categoryname = "testcategory";
             var creatcategory = userrepository.CreateCategory(userFromDb.Id, categoryname);
             var creatcategoryres= categoriesRepository.GetCategory(creatcategory.Id);
@@ -89,17 +89,18 @@ namespace Evernote.DataLayer.Sql.Tests
                 Login = "login",
                 Password = "password"
             };
-            var userrepository = new UsersRepository(ConnectionString, new CategoriesRepository(ConnectionString));
+            var userrepository = new UsersRepository();
             var result = userrepository.Create(user);
 
             _tempUsers.Add(user.Id);
 
             var userFromDb = userrepository.Get(result.Id);
-            var categoriesRepository = new CategoriesRepository(ConnectionString);
+            var categoriesRepository = new CategoriesRepository();
             string categoryname = "testcategory";
             var creatcategory = userrepository.CreateCategory(userFromDb.Id, categoryname);
 
-            var noterepository = new NotesRepository(new UsersRepository(ConnectionString, new CategoriesRepository(ConnectionString)), ConnectionString);
+            var noterepository = new NotesRepository();
+  
             var note = new Note
             {
                 header = "test",
@@ -113,8 +114,8 @@ namespace Evernote.DataLayer.Sql.Tests
 
             categoriesRepository.AddNoteintoCategory(noteresult.Id, creatcategory.Id);
 
-            var resnotes = noterepository.GetNotesofCategory(creatcategory.Id);
-            var rescategoryofnote=categoriesRepository.GetNoteCategories(resnotes.Single().Id);
+            var resnotes = categoriesRepository.GetNotesofCategory(creatcategory.Id);
+            var rescategoryofnote=categoriesRepository.GetNotesofCategory(resnotes.Single().Id);
             Assert.AreEqual(creatcategory.Id, rescategoryofnote.Single().Id);
 
         }
@@ -122,7 +123,7 @@ namespace Evernote.DataLayer.Sql.Tests
         public void CleanData()
         {
             foreach (var id in _tempUsers)
-                new UsersRepository(ConnectionString, new CategoriesRepository(ConnectionString)).Delete(id);
+                new UsersRepository().Delete(id);
         }
     }
 }

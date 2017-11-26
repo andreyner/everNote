@@ -12,9 +12,9 @@ namespace Evernote.DataLayer.Sql
     {
         private readonly string _connectionString;
         private readonly IUsersRepository _usersRepository;
-        public NotesRepository(IUsersRepository _usersRepository)
+        public NotesRepository()
         {
-            this._usersRepository = _usersRepository;
+            this._usersRepository = new UsersRepository();
             this._connectionString = ConfigurationManager.ConnectionStrings["DefaultConnection"].ConnectionString;
         }
         /// <summary>
@@ -89,7 +89,7 @@ namespace Evernote.DataLayer.Sql
                                 header = reader.GetString(reader.GetOrdinal("header")),
                                 text = reader.GetString(reader.GetOrdinal("text")),
                                 Created = reader.GetDateTime(reader.GetOrdinal("date_created")),
-                               // Owner = _usersRepository.Get(userId),
+                                Owner = _usersRepository.Get(reader.GetGuid(reader.GetOrdinal("userid"))),
                                 Changed = reader.GetDateTime(reader.GetOrdinal("date_changed"))
                             };
                         }
@@ -138,7 +138,11 @@ namespace Evernote.DataLayer.Sql
            resNote.Owner= _usersRepository.Get(newuserId);
            return resNote;
         }
-
+        /// <summary>
+        /// Получить владельца заметки по id заметки
+        /// </summary>
+        /// <param name="noteid"> ид заметки</param>
+        /// <returns>владелец</returns>
 
     }
 }
