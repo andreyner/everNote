@@ -25,5 +25,21 @@ namespace Evernote.WinForms.Forms
         {
             get { return this.txtboxcontent.Text; }
         }
+
+        public int Rules
+        {
+            get
+            {
+                if (radioButtonReadandWrite.Checked)
+                {
+                    return 1;
+                }
+                if (radioButtonReadonly.Checked)
+                {
+                    return 0;
+                }
+                return -1;
+            }
+        }
     }
 }

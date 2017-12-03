@@ -244,7 +244,7 @@ namespace Evernote.WinForms
                 default: throw new Exception("Не удалось обновить информацию!");
             }
         }
-        public void dellNoteInCategory(Guid noteid,Guid categoryid)
+        public void dellNotefromCategory(Guid noteid,Guid categoryid)
         {
             var res = _client.DeleteAsync($"categories/{categoryid}/note/{noteid}").Result;
             switch (res.StatusCode)
@@ -261,6 +261,16 @@ namespace Evernote.WinForms
             {
                 case HttpStatusCode.OK: return notes.Content.ReadAsAsync<IEnumerable<Note>>().Result;
                 default: throw new Exception("Не удалось получить заметки от других пользователей");
+            }
+        }
+        public void DellShare(Share share)
+        {
+            var res = _client.DeleteAsync($"shares/user/{share.DestinationUserId}/note/{share.SharedNoteId}").Result;
+            switch (res.StatusCode)
+            {
+                case HttpStatusCode.OK: return;
+                case HttpStatusCode.NoContent: return;
+                default: throw new Exception("Не удалось удалить шару!");
             }
         }
 

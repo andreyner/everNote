@@ -43,10 +43,10 @@
             // 
             // tableLayoutPanel1
             // 
-            this.tableLayoutPanel1.BackColor = System.Drawing.SystemColors.Info;
+            this.tableLayoutPanel1.BackColor = System.Drawing.Color.Transparent;
             this.tableLayoutPanel1.ColumnCount = 2;
-            this.tableLayoutPanel1.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 50F));
-            this.tableLayoutPanel1.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 50F));
+            this.tableLayoutPanel1.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 46.2F));
+            this.tableLayoutPanel1.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 53.8F));
             this.tableLayoutPanel1.Controls.Add(this.label2, 0, 1);
             this.tableLayoutPanel1.Controls.Add(this.txtbfirstname, 1, 0);
             this.tableLayoutPanel1.Controls.Add(this.txtblastname, 1, 1);
@@ -66,7 +66,7 @@
             this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 20F));
             this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 20F));
             this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 20F));
-            this.tableLayoutPanel1.Size = new System.Drawing.Size(593, 159);
+            this.tableLayoutPanel1.Size = new System.Drawing.Size(453, 237);
             this.tableLayoutPanel1.TabIndex = 0;
             // 
             // label2
@@ -76,52 +76,48 @@
             | System.Windows.Forms.AnchorStyles.Right)));
             this.label2.AutoSize = true;
             this.label2.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
-            this.label2.Location = new System.Drawing.Point(3, 31);
+            this.label2.Location = new System.Drawing.Point(3, 47);
             this.label2.Name = "label2";
-            this.label2.Size = new System.Drawing.Size(290, 31);
+            this.label2.Size = new System.Drawing.Size(203, 47);
             this.label2.TabIndex = 5;
             this.label2.Text = "Фамилия";
             this.label2.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
             // 
             // txtbfirstname
             // 
-            this.txtbfirstname.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.txtbfirstname.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right)));
             this.txtbfirstname.Font = new System.Drawing.Font("Microsoft Sans Serif", 11.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
-            this.txtbfirstname.Location = new System.Drawing.Point(299, 3);
+            this.txtbfirstname.Location = new System.Drawing.Point(212, 11);
             this.txtbfirstname.Name = "txtbfirstname";
-            this.txtbfirstname.Size = new System.Drawing.Size(291, 24);
+            this.txtbfirstname.Size = new System.Drawing.Size(238, 24);
             this.txtbfirstname.TabIndex = 0;
-            this.txtbfirstname.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
             // 
             // txtblastname
             // 
-            this.txtblastname.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.txtblastname.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right)));
             this.txtblastname.Font = new System.Drawing.Font("Microsoft Sans Serif", 11.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
-            this.txtblastname.Location = new System.Drawing.Point(299, 34);
+            this.txtblastname.Location = new System.Drawing.Point(212, 58);
             this.txtblastname.Name = "txtblastname";
-            this.txtblastname.Size = new System.Drawing.Size(291, 24);
+            this.txtblastname.Size = new System.Drawing.Size(238, 24);
             this.txtblastname.TabIndex = 1;
-            this.txtblastname.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
             // 
             // txtblogin
             // 
-            this.txtblogin.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.txtblogin.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right)));
             this.txtblogin.Font = new System.Drawing.Font("Microsoft Sans Serif", 11.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
-            this.txtblogin.Location = new System.Drawing.Point(299, 65);
+            this.txtblogin.Location = new System.Drawing.Point(212, 105);
             this.txtblogin.Name = "txtblogin";
-            this.txtblogin.Size = new System.Drawing.Size(291, 24);
+            this.txtblogin.Size = new System.Drawing.Size(238, 24);
             this.txtblogin.TabIndex = 2;
-            this.txtblogin.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
             // 
             // txtbpassword
             // 
-            this.txtbpassword.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.txtbpassword.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right)));
             this.txtbpassword.Font = new System.Drawing.Font("Microsoft Sans Serif", 11.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
-            this.txtbpassword.Location = new System.Drawing.Point(299, 96);
+            this.txtbpassword.Location = new System.Drawing.Point(212, 152);
             this.txtbpassword.Name = "txtbpassword";
-            this.txtbpassword.Size = new System.Drawing.Size(291, 24);
+            this.txtbpassword.Size = new System.Drawing.Size(238, 24);
             this.txtbpassword.TabIndex = 3;
-            this.txtbpassword.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
             // 
             // label1
             // 
@@ -132,7 +128,7 @@
             this.label1.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
             this.label1.Location = new System.Drawing.Point(3, 0);
             this.label1.Name = "label1";
-            this.label1.Size = new System.Drawing.Size(290, 31);
+            this.label1.Size = new System.Drawing.Size(203, 47);
             this.label1.TabIndex = 4;
             this.label1.Text = "Имя";
             this.label1.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
@@ -144,9 +140,9 @@
             | System.Windows.Forms.AnchorStyles.Right)));
             this.label3.AutoSize = true;
             this.label3.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
-            this.label3.Location = new System.Drawing.Point(3, 62);
+            this.label3.Location = new System.Drawing.Point(3, 94);
             this.label3.Name = "label3";
-            this.label3.Size = new System.Drawing.Size(290, 31);
+            this.label3.Size = new System.Drawing.Size(203, 47);
             this.label3.TabIndex = 6;
             this.label3.Text = "Логин";
             this.label3.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
@@ -158,31 +154,36 @@
             | System.Windows.Forms.AnchorStyles.Right)));
             this.label4.AutoSize = true;
             this.label4.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
-            this.label4.Location = new System.Drawing.Point(3, 93);
+            this.label4.Location = new System.Drawing.Point(3, 141);
             this.label4.Name = "label4";
-            this.label4.Size = new System.Drawing.Size(290, 31);
+            this.label4.Size = new System.Drawing.Size(203, 47);
             this.label4.TabIndex = 7;
             this.label4.Text = "Пароль";
             this.label4.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
             // 
             // btnRegister
             // 
+            this.btnRegister.Anchor = System.Windows.Forms.AnchorStyles.None;
+            this.btnRegister.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(192)))), ((int)(((byte)(255)))), ((int)(((byte)(192)))));
             this.btnRegister.DialogResult = System.Windows.Forms.DialogResult.OK;
-            this.btnRegister.Dock = System.Windows.Forms.DockStyle.Fill;
             this.btnRegister.Font = new System.Drawing.Font("Microsoft Sans Serif", 9.75F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
-            this.btnRegister.Location = new System.Drawing.Point(299, 127);
+            this.btnRegister.Location = new System.Drawing.Point(243, 196);
             this.btnRegister.Name = "btnRegister";
-            this.btnRegister.Size = new System.Drawing.Size(291, 29);
+            this.btnRegister.Size = new System.Drawing.Size(175, 32);
             this.btnRegister.TabIndex = 8;
             this.btnRegister.Text = "Зарегистрироваться";
-            this.btnRegister.UseVisualStyleBackColor = true;
+            this.btnRegister.UseVisualStyleBackColor = false;
             // 
             // NewUserForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(593, 159);
+            this.BackgroundImage = global::Evernote.WinForms.Properties.Resources.Evernotelog;
+            this.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Stretch;
+            this.ClientSize = new System.Drawing.Size(453, 237);
             this.Controls.Add(this.tableLayoutPanel1);
+            this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedDialog;
+            this.MaximizeBox = false;
             this.Name = "NewUserForm";
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterParent;
             this.Text = "Регистрация нового пользователя";

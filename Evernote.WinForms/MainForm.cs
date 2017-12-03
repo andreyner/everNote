@@ -20,6 +20,7 @@ namespace Evernote.WinForms
             InitializeComponent();
             this.user = user;
             this._serviceClient = _serviceClient;
+            this.Text +=" "+ this.user.FirstName + " " + this.user.LastName;
         }
 
         User user;
@@ -51,6 +52,12 @@ namespace Evernote.WinForms
         {
             try
             {
+                if (dataGcategories.SelectedRows.Count > 0)
+                {
+                    dataGcategories_CellMouseClick(this, new DataGridViewCellMouseEventArgs(0, 0, 0, 0, new MouseEventArgs(new MouseButtons(), 1, 1, 1, 1)));
+                    return;
+                }
+
                 notes = _serviceClient.GetUserNotes(user.Id);
                 dataGNotes.DataSource = null;
                 if (notes != null)
@@ -86,6 +93,7 @@ namespace Evernote.WinForms
             CategoryUpdate();
             dataGcategories.ClearSelection();
             dataGNotes.ClearSelection();
+            
         }
 
         private void btnaddcategory_Click(object sender, EventArgs e)
@@ -94,6 +102,7 @@ namespace Evernote.WinForms
             {
                 using (var form = new NewCategoryForm())
                 {
+                    form.Text += " " + this.user.FirstName + " " + this.user.LastName;
                     if (form.ShowDialog() == DialogResult.OK)
                     {
                         _serviceClient.CreateCategory(new Category
@@ -123,15 +132,17 @@ namespace Evernote.WinForms
             {
                 using (var form = new NewNoteForm())
                 {
+                    form.Text += " " + this.user.FirstName + " " + this.user.LastName;
                     if (form.ShowDialog() == DialogResult.OK)
-                    {
+                    {   
                         _serviceClient.CreateNote(new Note
                         {
                             header = form.NameNote,
                             text = form.Contetnt,
                             Owner = user,
                             Changed = DateTime.Now,
-                            Created = DateTime.Now
+                            Created = DateTime.Now,
+                            rules=form.Rules
 
 
                         });
@@ -150,7 +161,9 @@ namespace Evernote.WinForms
 
         private void btnShowallNote_Click(object sender, EventArgs e)
         {
+            dataGcategories.ClearSelection();
             NoteUpdate();
+            dataGcategories.ClearSelection();
         }
 
         private void btndellNote_Click(object sender, EventArgs e)
@@ -161,7 +174,7 @@ namespace Evernote.WinForms
 
                 if (dataGNotes.SelectedRows.Count > 0)
                 {
-                    Guid noteid = ((Note)dataGNotes.SelectedRows[0].DataBoundItem).Id;
+                    Guid noteid = ((Note)dataGNotes.Rows[dataGNotes.CurrentRow.Index].DataBoundItem).Id;
                     _serviceClient.DeleteNote(noteid);
                     MessageBox.Show($"Заметка успешно удалена", "Заметка", MessageBoxButtons.OK, MessageBoxIcon.Information);
                     NoteUpdate();
@@ -180,34 +193,7 @@ namespace Evernote.WinForms
 
         private void btnchangenote_Click(object sender, EventArgs e)
         {
-            try
-            {
-                
-                if (dataGNotes.SelectedRows.Count > 0)
-                {
-                    Guid noteid = ((Note)dataGNotes.SelectedRows[0].DataBoundItem).Id;
-                    Note note = _serviceClient.GetNote(noteid);
-                    using (var form = new EditNoteForm((note)))
-                    {
-                        if (form.ShowDialog() == DialogResult.OK)
-                        {
-                            _serviceClient.UpdateNote(new Note
-                            {
-                                Id = noteid,
-                                header = form.NameNote,
-                                text = form.Contetnt,
-                                Owner = user,
-                                Changed = DateTime.Now,
-                                Created = note.Changed
-
-
-                            });
-                            NoteUpdate();
-                        }
-                    }
-                }
-            }
-            catch { }
+           
         }
 
         private void btnaddintoCategory_Click(object sender, EventArgs e)
@@ -218,17 +204,13 @@ namespace Evernote.WinForms
 
                 if (dataGNotes.SelectedRows.Count > 0)
                 {
-                    Guid selectednoteid = ((Note)dataGNotes.SelectedRows[0].DataBoundItem).Id;
+                    Guid selectednoteid = ((Note)dataGNotes.Rows[dataGNotes.CurrentRow.Index].DataBoundItem).Id;
                     Note selectedNote = _serviceClient.GetNote(selectednoteid);
-                    IEnumerable<Category> categoriesofnote = _serviceClient.GetfreeCategoriesofNote(selectedNote.Id, user.Id);
-                    using (var form = new AllCategoriesofUserForm(categoriesofnote))
+                    using (var form = new AllCategoriesofUserForm(_serviceClient, selectedNote.Id, user.Id))
                     {
-                        if (form.ShowDialog() == DialogResult.OK)
-                        {
-                            _serviceClient.GetNotesofCategory(form.CategoryId);
-                            _serviceClient.AddNoteIntoCategory(form.CategoryId, selectedNote);
-                            MessageBox.Show($"Заметка добавлена", "Заметка", MessageBoxButtons.OK, MessageBoxIcon.Information);
-                        }
+                        form.Text += " " + this.user.FirstName + " " + this.user.LastName;
+                        form.ShowDialog();
+                       
                     }
                 }
             }
@@ -244,35 +226,19 @@ namespace Evernote.WinForms
             {
                 if (dataGNotes.SelectedRows.Count > 0)
                 {
-                    Guid selectednoteid = ((Note)dataGNotes.SelectedRows[0].DataBoundItem).Id;
+                    
+                    Guid selectednoteid = ((Note)dataGNotes.Rows[dataGNotes.CurrentRow.Index].DataBoundItem).Id;
                     IEnumerable<User> users = _serviceClient.GetAllUsersexpectedMe(user.Id);
-                    using (var form = new AllUsersForm(users))
+                    using (var form = new AllUsersForm(users, _serviceClient, selectednoteid, user.Id))
                     {
-                        if (form.ShowDialog() == DialogResult.OK)
-                        {
-                            if (_serviceClient.GetSharestoMe(form.UserId).Select(note => note.Id).Contains(selectednoteid))
-                            {
-                                MessageBox.Show($"Заметка ранее уже была отаправлена данному пользователю", "Заметка", MessageBoxButtons.OK, MessageBoxIcon.Information);
-                                return;
-                            }
-                            _serviceClient.CreatShare
-                                (
-                                new Share
-                                {
-                                    DestinationUserId = form.UserId,
-                                    SharedNoteId = selectednoteid
-
-                                }
-
-                                );
-                            MessageBox.Show($"Заметка отаправлена", "Заметка", MessageBoxButtons.OK, MessageBoxIcon.Information);
-                        }
+                        form.Text += " " + this.user.FirstName + " " + this.user.LastName;
+                        form.ShowDialog();
                     }
                 }
             }
             catch 
             {
-                MessageBox.Show("Не удалось поделиться заметкой!", "Ошибка", MessageBoxButtons.OK, MessageBoxIcon.Stop);
+                MessageBox.Show("Ошибка при попытке подклиться заметками!", "Ошибка", MessageBoxButtons.OK, MessageBoxIcon.Stop);
             }
         }
 
@@ -288,6 +254,7 @@ namespace Evernote.WinForms
                 IEnumerable<Note> notes = _serviceClient.GetShareMe(user.Id);
                 using (var form = new SharesMeForm(notes, _serviceClient, user.Id))
                 {
+                    form.Text += " " + this.user.FirstName + " " + this.user.LastName;
                     form.ShowDialog();
                 }
             }
@@ -316,14 +283,9 @@ namespace Evernote.WinForms
                 if (dataGcategories.SelectedRows.Count > 0)
                 {
 
-                    notes = _serviceClient.GetNotesofCategory(user.Categories.Select(category => category.Id).
-                    Where(categotyid => categotyid == Guid.Parse(dataGcategories.SelectedRows[0].Cells["Id"].Value.ToString())).Single());
-
-                    dataGNotes.DataSource = null;
-                    if (notes != null)
-                    {
-                        dataGNotes.DataSource = notes;
-                    }
+                    notes = _serviceClient.GetNotesofCategory(((Category)dataGcategories.Rows[dataGcategories.CurrentRow.Index].DataBoundItem).Id);
+                    dataGNotes.DataSource = notes;
+                    
                 }
             }
             catch { }
@@ -334,10 +296,11 @@ namespace Evernote.WinForms
             try
             {
 
-
+                dataGcategories.ClearSelection();
                 NoteUpdate();
                 dataGcategories.ClearSelection();
                 dataGNotes.ClearSelection();
+                dataGcategories.ClearSelection();
             }
             catch { }
           
@@ -350,13 +313,17 @@ namespace Evernote.WinForms
 
         private void btndellCategory_Click(object sender, EventArgs e)
         {
-            if (dataGcategories.SelectedRows.Count > 0)
+            try
             {
-                Guid categoryid = Guid.Parse(dataGcategories.SelectedRows[0].Cells["Id"].Value.ToString());
-                _serviceClient.DellCategory(categoryid);
-                MessageBox.Show($"Категория удалена", "Категория", MessageBoxButtons.OK, MessageBoxIcon.Information);
-                CategoryUpdate();
+                if (dataGcategories.SelectedRows.Count > 0)
+                {    
+                    Guid categoryid =((Category) dataGcategories.Rows[dataGcategories.CurrentRow.Index].DataBoundItem).Id;
+                    _serviceClient.DellCategory(categoryid);
+                    MessageBox.Show($"Категория удалена", "Категория", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                    CategoryUpdate();
+                }
             }
+            catch { }
         }
 
         private void brnRenameCategory_Click(object sender, EventArgs e)
@@ -365,11 +332,11 @@ namespace Evernote.WinForms
             {
                 if (dataGcategories.SelectedRows.Count > 0)
                 {
-                    Guid categotyid = Guid.Parse(dataGcategories.SelectedRows[0].Cells["Id"].Value.ToString());
+                    Guid categotyid = ((Category)dataGcategories.Rows[dataGcategories.CurrentRow.Index].DataBoundItem).Id;
                     Category category = _serviceClient.GetCategory(categotyid);
                     using (var form = new EditCategoryForm(category))
                     {
-
+                        form.Text += " " + this.user.FirstName + " " + this.user.LastName;
                         if (form.ShowDialog() == DialogResult.OK)
                         {
                             _serviceClient.CategoryUpdate(new Category
@@ -408,51 +375,26 @@ namespace Evernote.WinForms
 
         private void dataGNotes_CellDoubleClick(object sender, DataGridViewCellEventArgs e)
         {
-            if (dataGNotes.SelectedRows.Count > 0)
+            try
             {
-                Guid noteid = ((Note)dataGNotes.SelectedRows[0].DataBoundItem).Id;
-                Note note = _serviceClient.GetNote(noteid);
-                using (var form = new ShowNoteForm((note)))
+
+
+                if (dataGNotes.SelectedRows.Count > 0)
                 {
-                    if (form.ShowDialog() == DialogResult.OK)
+                    Guid noteid = ((Note)dataGNotes.Rows[dataGNotes.CurrentRow.Index].DataBoundItem).Id;
+                    Note note = _serviceClient.GetNote(noteid);
+                    using (var form = new ShowNoteForm(note, _serviceClient))
                     {
-                        _serviceClient.UpdateNote(new Note
+                        form.Text += " " + this.user.FirstName + " " + this.user.LastName;
+                        if (form.ShowDialog() == DialogResult.OK)
                         {
-                            Id = noteid,
-                            header = form.NameNote,
-                            text = form.Contetnt,
-                            Owner = user,
-                            Changed = DateTime.Now,
-                            Created = note.Changed
-
-
-                        });
-                        NoteUpdate();
-                    }
-                    else
-                    {
-                        if (form.NameNote != note.header || (form.Contetnt != note.text))
-                        {
-
-                            if (MessageBox.Show($"Имеются несохранёные изменения.Хотите их сохранить?", "Внимание", MessageBoxButtons.YesNo, MessageBoxIcon.Question) == DialogResult.Yes)
-                            {
-                                _serviceClient.UpdateNote(new Note
-                                {
-                                    Id = noteid,
-                                    header = form.NameNote,
-                                    text = form.Contetnt,
-                                    Owner = user,
-                                    Changed = DateTime.Now,
-                                    Created = note.Changed
-
-
-                                });
-                                NoteUpdate();
-                            }
+                            NoteUpdate();
                         }
+
                     }
                 }
             }
+            catch { }
         }
 
         private void btnUserdataShow_Click(object sender, EventArgs e)
@@ -461,7 +403,7 @@ namespace Evernote.WinForms
             {
                 using (var form = new InfoUserForm(user))
                 {
-
+                    form.Text += " " + this.user.FirstName + " " + this.user.LastName;
                     if (form.ShowDialog() == DialogResult.OK)
                     {
                         _serviceClient.UpdateUser(new User
@@ -486,7 +428,7 @@ namespace Evernote.WinForms
 
         private void dataGcategories_SelectionChanged(object sender, EventArgs e)
         {
-            dataGcategories_CellMouseClick(sender, new DataGridViewCellMouseEventArgs(0, 0, 0, 0, new MouseEventArgs(new MouseButtons(), 1, 1, 1, 1)));
+            //dataGcategories_CellMouseClick(sender, new DataGridViewCellMouseEventArgs(0, 0, 0, 0, new MouseEventArgs(new MouseButtons(), 1, 1, 1, 1)));
         }
 
         private void btnaddNoteContextMenu_Click(object sender, EventArgs e)
@@ -499,9 +441,10 @@ namespace Evernote.WinForms
             try
             {
                 if (dataGcategories.SelectedRows.Count > 0 && dataGNotes.SelectedRows.Count > 0)
-                {
-                    _serviceClient.dellNoteInCategory(((Note)dataGNotes.SelectedRows[0].DataBoundItem).Id, Guid.Parse(dataGcategories.SelectedRows[0].Cells["Id"].Value.ToString()));
+                {   
+                    _serviceClient.dellNotefromCategory(((Note)dataGNotes.Rows[dataGNotes.CurrentRow.Index].DataBoundItem).Id, ((Category) dataGcategories.Rows[dataGcategories.CurrentRow.Index].DataBoundItem).Id);
                      dataGcategories_SelectionChanged(sender,e);
+                    NoteUpdate();
                 }
             }
             catch
@@ -509,6 +452,66 @@ namespace Evernote.WinForms
                 MessageBox.Show($"Ошибка при удалении", "Ошибка", MessageBoxButtons.OK, MessageBoxIcon.Error);
 
             }
+        }
+
+        private void btnfind_Click(object sender, EventArgs e)
+        {
+            try
+            {
+                string find = txtBfind.Text.Trim();
+                if (find != "")
+                {   if (checkBnote.Checked)
+                    {
+                        dataGNotes.DataSource = null;
+                        notes = _serviceClient.GetUserNotes(user.Id);
+                        notes = notes.Where(note => (note.header.Contains(find) || note.text.Contains(find) || note.Changed.ToString().Contains(find)));
+                        dataGNotes.DataSource = notes.ToList();
+                        dataGNotes.ClearSelection();
+                    }
+                    if (checkBcategory.Checked)
+                    {
+                        dataGcategories.DataSource = null;
+                        List<Category> category = _serviceClient.GetUserCategories(user.Id).ToList();
+                        category = category.Where(categories => categories.Name.Contains(find)).ToList();
+                        dataGcategories.DataSource = category;
+                        dataGcategories.ClearSelection();
+                    }
+                }
+            }
+            catch { }
+
+        }
+
+        private void btnshowallcategory_Click(object sender, EventArgs e)
+        {
+            CategoryUpdate();
+            dataGcategories.ClearSelection();
+        }
+
+        private void btnshowallcatergory_Click(object sender, EventArgs e)
+        {
+            CategoryUpdate();
+            dataGcategories.ClearSelection();
+        }
+
+        private void btndropselectedcategory_Click(object sender, EventArgs e)
+        {
+            dataGcategories.ClearSelection();
+        }
+
+        private void btnclearselection_Click(object sender, EventArgs e)
+        {
+            dataGcategories.ClearSelection();
+        }
+
+        private void dataGcategories_CellMouseDoubleClick(object sender, DataGridViewCellMouseEventArgs e)
+        {
+            brnRenameCategory_Click(sender, e);
+        }
+
+        private void btnnewcategory_Click(object sender, EventArgs e)
+        {
+            btnaddcategory_Click(sender, e);
         }
     }
 }

@@ -31,13 +31,14 @@ namespace Evernote.DataLayer.Sql
                 using (var command = sqlConnection.CreateCommand())
                 {
                     note.Id = Guid.NewGuid();
-                    command.CommandText = "insert into Note (id, header, text, date_created, userid, date_changed) values (@id, @header, @text, @date_created, @userid, @date_changed)";
+                    command.CommandText = "insert into Note (id, header, text, date_created, userid, date_changed, [rule] ) values (@id, @header, @text, @date_created, @userid, @date_changed, @rules)";
                     command.Parameters.AddWithValue("@id", note.Id);
                     command.Parameters.AddWithValue("@header", note.header);
                     command.Parameters.AddWithValue("@text", note.text);
                     command.Parameters.AddWithValue("@date_created", note.Created);
                     command.Parameters.AddWithValue("@userid", note.Owner.Id);
                     command.Parameters.AddWithValue("@date_changed", note.Created);
+                    command.Parameters.AddWithValue("@rules", note.rules);
                     command.ExecuteNonQuery();
                     return note;
                 }
@@ -81,7 +82,7 @@ namespace Evernote.DataLayer.Sql
                     {
                         while (reader.Read())
                         {
-                          
+
                             return new Note
                             {
 
@@ -90,7 +91,9 @@ namespace Evernote.DataLayer.Sql
                                 text = reader.GetString(reader.GetOrdinal("text")),
                                 Created = reader.GetDateTime(reader.GetOrdinal("date_created")),
                                 Owner = _usersRepository.Get(reader.GetGuid(reader.GetOrdinal("userid"))),
-                                Changed = reader.GetDateTime(reader.GetOrdinal("date_changed"))
+                                Changed = reader.GetDateTime(reader.GetOrdinal("date_changed")),
+                                rules = reader.GetInt32((reader.GetOrdinal("rule")))
+
                             };
                         }
                         
@@ -114,12 +117,14 @@ namespace Evernote.DataLayer.Sql
                     command.CommandText = "Update Note Set" +
                         " header=@header, " +
                         " text=@text," +
-                        " date_changed=@date_changed " +
+                        " date_changed=@date_changed, " +
+                        " [rule] = @rule " +
                         " Where id=@id";
                     command.Parameters.AddWithValue("@id", note.Id);
                     command.Parameters.AddWithValue("@header", note.header);
                     command.Parameters.AddWithValue("@text", note.text);
                     command.Parameters.AddWithValue("@date_changed", note.Changed);
+                    command.Parameters.AddWithValue("@rule", note.rules);
                     command.ExecuteNonQuery();
                     return note;
                 }
@@ -138,11 +143,7 @@ namespace Evernote.DataLayer.Sql
            resNote.Owner= _usersRepository.Get(newuserId);
            return resNote;
         }
-        /// <summary>
-        /// Получить владельца заметки по id заметки
-        /// </summary>
-        /// <param name="noteid"> ид заметки</param>
-        /// <returns>владелец</returns>
+      
 
     }
 }

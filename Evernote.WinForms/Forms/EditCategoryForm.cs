@@ -28,5 +28,9 @@ namespace Evernote.WinForms.Forms
             }
         }
 
+        private void EditCategoryForm_Load(object sender, EventArgs e)
+        {
+
+        }
     }
 }

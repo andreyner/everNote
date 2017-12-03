@@ -66,16 +66,17 @@ namespace Evernote.API.Controllers
             Logger.Log.Instance.Info("Получение шары  от пользователя с id: {0}", id);
             return _sharesRepository.GetSharesfromMe(id);
         }
-        /// <summary>
-        /// Удаление шары
-        /// </summary>
-        /// <param name="share"> шара</param>
+       /// <summary>
+       /// Удаление шары
+       /// </summary>
+       /// <param name="DestinationUserID"> кому шары</param>
+       /// <param name="SharedNoteID"> id заметки</param>
         [HttpDelete]
-        [Route("api/shares")]
-        public void Sharesdelete([FromBody]Share share)
+        [Route("api/shares/user/{DestinationUserID}/note/{SharedNoteID}")]
+        public void Sharesdelete(Guid DestinationUserID,Guid SharedNoteID)
         {
-             Logger.Log.Instance.Info("Удаление шары для пользователя с id: {0} c заметкой id которой {1}", share.DestinationUserId, share.SharedNoteId);
-            _sharesRepository.ShareDelete(share);
+             Logger.Log.Instance.Info("Удаление шары для пользователя с id: {0} c заметкой id которой {1}", DestinationUserID, SharedNoteID);
+            _sharesRepository.ShareDelete(new Share { DestinationUserId=DestinationUserID, SharedNoteId= SharedNoteID });
         }
 
     }

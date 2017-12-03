@@ -25,7 +25,7 @@ namespace Evernote.DataLayer.Sql.Tests
                 Login="login",
                 Password="password"
             };
-            var userrepository = new UsersRepository(ConnectionString, new CategoriesRepository(ConnectionString));
+            var userrepository = new UsersRepository();
             var result = userrepository.Create(user);
 
             _tempUsers.Add(user.Id);
@@ -35,7 +35,7 @@ namespace Evernote.DataLayer.Sql.Tests
             //asserts 1
             Assert.AreEqual(result.FirstName, userFromDb.FirstName);
 
-            var noterepository = new NotesRepository(new UsersRepository(ConnectionString,new CategoriesRepository(ConnectionString)),ConnectionString);
+            var noterepository = new NotesRepository();
             var note = new Note
             {
                 header = "test",
@@ -60,7 +60,7 @@ namespace Evernote.DataLayer.Sql.Tests
             
 
             foreach (var id in _tempUsers)
-                new UsersRepository(ConnectionString, new CategoriesRepository(ConnectionString)).Delete(id);
+                new UsersRepository().Delete(id);
         }
     }
 }

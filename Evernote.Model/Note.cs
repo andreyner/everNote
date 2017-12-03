@@ -18,6 +18,8 @@ namespace Evernote
 
         public User Owner { get; set; }
 
+        public int rules { get; set; }
+
         public DateTime Created { get; set; }
 
         public DateTime Changed { get; set; }

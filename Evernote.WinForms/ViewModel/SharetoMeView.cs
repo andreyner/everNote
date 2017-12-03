@@ -14,6 +14,8 @@ namespace Evernote.WinForms.ViewModel
         public string Owner { get; set; }
         [DisplayName("Название")]
         public string header { get; set; }
+        [DisplayName("Текст")]
+        public string content { get; set; }
         [DisplayName("Создана")]
         public DateTime Created { get; set; }
         [DisplayName("Изменена")]
