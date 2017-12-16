@@ -48,6 +48,7 @@ namespace Evernote.WinForms.Forms
                             Note selectedNote = _serviceClient.GetNote(noteid);
                             _serviceClient.AddNoteIntoCategory(CategoryId, selectedNote);
                             dataGCategories.DataSource = _serviceClient.GetUserCategories(Userid).ToList();
+                            dataGCategories.ClearSelection();
                         }
                         MessageBox.Show($"Успешно добавлено", "Добавлено", MessageBoxButtons.OK, MessageBoxIcon.Information);
                     }

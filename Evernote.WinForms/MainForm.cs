@@ -149,6 +149,7 @@ namespace Evernote.WinForms
                         
                         MessageBox.Show($"Заметка {form.NameNote} успешно создана", "Заметка", MessageBoxButtons.OK, MessageBoxIcon.Information);
                         NoteUpdate();
+                        dataGNotes.ClearSelection();
                     }
                 }
             }
@@ -285,7 +286,9 @@ namespace Evernote.WinForms
 
                     notes = _serviceClient.GetNotesofCategory(((Category)dataGcategories.Rows[dataGcategories.CurrentRow.Index].DataBoundItem).Id);
                     dataGNotes.DataSource = notes;
-                    
+                    dataGNotes.ClearSelection();
+
+
                 }
             }
             catch { }
